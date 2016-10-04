@@ -43,7 +43,6 @@ function wpimprov_create_post_type() {
 			"editor",
 			"thumbnail",
 			"revisions",
-			"custom-fields",
 		),
 		'public' => true,
 		'has_archive' => true,
@@ -81,7 +80,7 @@ function wpimprov_meta_boxes_setup() {
   /* Add meta boxes on the 'add_meta_boxes' hook. */
   add_action( 'add_meta_boxes', 'wpimprov_add_post_meta_boxes' );
   /* Save post meta on the 'save_post' hook. */
-add_action( 'save_post', 'wpimprov_save_post_class_meta', 10, 2 );
+  add_action( 'save_post', 'wpimprov_save_post_class_meta', 10, 2 );
 }
 
 /* Create one or more meta boxes to be displayed on the post editor screen. */
@@ -95,12 +94,22 @@ function wpimprov_add_post_meta_boxes() {
     'side',         // Context
     'default'         // Priority
   );
+  
+  add_meta_box(
+    'wpimprov-team-class',      // Unique ID
+    esc_html__( 'Team details', 'wpimprov' ),    // Title
+    'wpimprov_team_class_meta_box',   // Callback function
+    'wpimprov_team',         // Admin page (or post type)
+    'side',         // Context
+    'default'         // Priority
+  );
+  
 }
 
 
 function wpimprov_event_class_meta_box( $object, $box ) { ?>
 
-  <?php wp_nonce_field( basename( __FILE__ ), 'wpimpro_event_class_nonce' ); ?>
+  <?php wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); ?>
 
   <p>
     <label for="wpimprov-event-fb"><?php _e( "Facebook event id", 'wpimprov' ); ?></label>
@@ -121,12 +130,24 @@ function wpimprov_event_class_meta_box( $object, $box ) { ?>
     <input class="widefat" type="datetime-local" name="wpimprov-event-end-time" id="wpimprov-event-end-time" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-event-end-time', true ) ); ?>" size="30" />
   </p>
   
-  
-  
-  
-  
-  
 <?php }
+
+function wpimprov_team_class_meta_box( $object, $box ) { ?>
+  <?php wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); ?>
+
+  <p>
+    <label for="wpimprov-team-fb"><?php _e( "Facebook id", 'wpimprov' ); ?></label>
+    <br />
+    <input class="widefat" type="text" name="wpimprov-team-fb" id="wpimprov-team-fb" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-team-fb', true ) ); ?>" size="30" />
+  </p>
+  
+  
+  <p>
+    <label for="wpimprov-team-webpages"><?php _e( "Webpages", 'wpimprov' ); ?></label>
+    <br />
+    <input class="widefat" type="text" name="wpimprov-team-webpages" id="wpimprov-team-webpages" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-team-webpages', true ) ); ?>" size="30" />
+  </p>
+<?php }                                    
 
 
 function wpimprov_meta($post_id, $key){
@@ -150,27 +171,53 @@ function wpimprov_meta($post_id, $key){
 
                                   /* Save the meta box's post metadata. */
 function wpimprov_save_post_class_meta( $post_id, $post ) {
-                                   error_log(__LINE__);
   /* Verify the nonce before proceeding. */
-  if ( !isset( $_POST['wpimpro_event_class_nonce'] ) || !wp_verify_nonce( $_POST['wpimpro_event_class_nonce'], basename( __FILE__ ) ) )
+  if ( !isset( $_POST['wpimpro_nonce'] ) || !wp_verify_nonce( $_POST['wpimpro_nonce'], basename( __FILE__ ) ) )
     return $post_id;                    
-error_log(__LINE__)                      ;
+
   /* Get the post type object. */
   $post_type = get_post_type_object( $post->post_type );
-                   error_log(__LINE__);
-  if($post->post_type!=="wpimprov_event"){
-    error_log($post->post_type)       ;
-    return $post_id;
-  
-  }
-    error_log(__LINE__) ;
+
   /* Check if the current user has permission to edit the post. */
   if ( !current_user_can( $post_type->cap->edit_post, $post_id ) )
     return $post_id;
-    error_log(__LINE__);
-
-  wpimprov_meta($post_id,"wpimprov-event-end-time");
-  wpimprov_meta($post_id,"wpimprov-event-start-time");
-  wpimprov_meta($post_id,"wpimprov-event-fb");
-  error_log(__LINE__);
+    
+  switch($post->post_type=="wpimprov_event"){
+  case 'wpimprov-event':
+    wpimprov_meta($post_id,"wpimprov-event-end-time");
+    wpimprov_meta($post_id,"wpimprov-event-start-time");
+    wpimprov_meta($post_id,"wpimprov-event-fb");
+    break;
+  case 'wpimprov-team':
+    wpimprov_meta($post_id,"wpimprov-team-webpages");
+    wpimprov_meta($post_id,"wpimprov-team-fb");
+    break;                                         
+  
+ 
+  }    
+  
 }
+
+
+register_activation_hook( __FILE__, 'wpimprov_hook_schedule' );
+
+
+add_action( 'wpimprov_hook', 'wpimprov_cron' );
+
+
+function calendar_from_fb_hook_schedule(){
+  //Use wp_next_scheduled to check if the event is already scheduled
+  $timestamp = wp_next_scheduled( 'wpimprov_cron' );
+
+  //If $timestamp == false schedule daily backups since it hasn't been done previously
+  if( $timestamp == false ){
+    //Schedule the event for right now, then to repeat daily using the hook 'wi_create_daily_backup'
+    wp_schedule_event( time(), 'daily', 'wpimprov_cron' );
+  }
+}
+
+function wpimprov_cron() {
+         //wpimprov_repair(true);
+         //wpimprov_repair(false);
+}
+
