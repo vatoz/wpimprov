@@ -205,7 +205,7 @@ register_activation_hook( __FILE__, 'wpimprov_hook_schedule' );
 add_action( 'wpimprov_hook', 'wpimprov_cron' );
 
 
-function calendar_from_fb_hook_schedule(){
+function wpimprov_hook_schedule(){
   //Use wp_next_scheduled to check if the event is already scheduled
   $timestamp = wp_next_scheduled( 'wpimprov_cron' );
 
