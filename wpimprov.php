@@ -221,3 +221,84 @@ function wpimprov_cron() {
          //wpimprov_repair(false);
 }
 
+if(is_admin()){
+        add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
+ 
+        add_action( 'admin_init', 'wpimprov_settings_init' );
+
+}
+function wpimprov_add_admin_menu(  ) {
+
+        add_menu_page( 'wpimprov', 'wpimprov', 'manage_options', 'wpimprov', 'wpimprov_options_page' );
+
+}
+
+
+function wpimprov_settings_init(  ) {
+
+        register_setting( 'pluginPage', 'wpimprov_settings' );
+
+        add_settings_section(
+                'wpimprov_pluginPage_section',
+                __( 'My settings', 'wpimprov' ),
+                'wpimprov_settings_section_callback',
+                'pluginPage'
+        );
+
+        add_settings_field(
+                'wpimprov_textarea_field_0',
+                __( 'List of tag selectors in form string|tag on new lines', 'wpimprov' ),
+                'wpimprov_textarea_field_0_render',
+                'pluginPage',
+                'wpimprov_pluginPage_section'
+        );
+
+
+}
+
+
+function wpimprov_textarea_field_0_render(  ) {
+
+        $options = get_option( 'wpimprov_settings' );
+        ?>
+        <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_field_0]'><?php echo $options['wpimprov_textarea_field_0']; ?></textarea>
+        <?php
+
+}
+
+
+function wpimprov_settings_section_callback(  ) {
+
+        echo __( 'Automatic assigning of tags', 'wpimprov' );
+
+}
+
+
+function wpimprov_options_page(  ) {
+
+        ?>
+        <form action='options.php' method='post'>
+
+                <h2>wpimprov</h2>
+
+                <?php
+                settings_fields( 'pluginPage' );
+                do_settings_sections( 'pluginPage' );
+                submit_button();
+                ?>
+
+        </form>     <br>
+
+
+
+        <?php
+       // calendar_from_fb_cron();
+        //echo __( 'In near future without tag', 'calendar_from_fb' );
+        //echo calendar_from_fb_display_func(array('list'=>'null'));
+
+}
+
+
+
+
+
