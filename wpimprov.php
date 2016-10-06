@@ -8,7 +8,7 @@
  * Author URI: https://www.facebook.com/vaclav.cerny.12
  * License: MIT
  */
- 
+require 'wpimprov_field.php';
 
 add_action( 'init', 'wpimprov_create_post_type' );
 
@@ -105,69 +105,49 @@ function wpimprov_add_post_meta_boxes() {
   );
   
 }
-
-
-function wpimprov_event_class_meta_box( $object, $box ) { ?>
-
-  <?php wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); ?>
-
-  <p>
-    <label for="wpimprov-event-fb"><?php _e( "Facebook event id", 'wpimprov' ); ?></label>
-    <br />
-    <input class="widefat" type="number" name="wpimprov-event-fb" id="wpimprov-event-fb" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-event-fb', true ) ); ?>" size="30" />
-  </p>
+function wpimprov_field_def($content_type){
+ $Result=array();
+  switch($content_type){
+    case "wpimprov_team":
+                 $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
+    break;
+    case "wpimprov_event":
+                 $Result[]=new wpimprov_field('wpimprov-event-fb',__( "Facebook event id", 'wpimprov' ),'text');
+                 $Result[]=new wpimprov_field('wpimprov-event-start-time',__( "Start time", 'wpimprov' ),'datetime-local');
+                 $Result[]=new wpimprov_field('wpimprov-event-end-time',__( "End time", 'wpimprov' ),'datetime-local');
+                 $Result[]=new wpimprov_field('wpimprov-event-venue',__( "Venue", 'wpimprov' ),'text');
+                 $Result[]=new wpimprov_field('wpimprov-event-ticket-uri',__( "Tickets", 'wpimprov' ),'text');
+                 $Result[]=new wpimprov_field('wpimprov-event-geo-latitude',__( "Latitude", 'wpimprov' ),'number');
+                 $Result[]=new wpimprov_field('wpimprov-event-geo-longitude',__( "Longitude", 'wpimprov' ),'number');
+                 
+                 
+    break;
+                 
+    
   
-  
-  <p>
-    <label for="wpimprov-event-start-time"><?php _e( "Event start date time", 'wpimprov' ); ?></label>
-    <br />
-    <input class="widefat" type="datetime-local" name="wpimprov-event-start-time" id="wpimprov-event-start-time" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-event-start-time', true ) ); ?>" size="30" />
-  </p>
-  
-  <p>
-    <label for="wpimprov-event-end-time"><?php _e( "Event end date time", 'wpimprov' ); ?></label>
-    <br />
-    <input class="widefat" type="datetime-local" name="wpimprov-event-end-time" id="wpimprov-event-end-time" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-event-end-time', true ) ); ?>" size="30" />
-  </p>
-  
-<?php }
-
-function wpimprov_team_class_meta_box( $object, $box ) { ?>
-  <?php wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); ?>
-
-  <p>
-    <label for="wpimprov-team-fb"><?php _e( "Facebook id", 'wpimprov' ); ?></label>
-    <br />
-    <input class="widefat" type="text" name="wpimprov-team-fb" id="wpimprov-team-fb" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-team-fb', true ) ); ?>" size="30" />
-  </p>
-  
-  
-  <p>
-    <label for="wpimprov-team-webpages"><?php _e( "Webpages", 'wpimprov' ); ?></label>
-    <br />
-    <input class="widefat" type="text" name="wpimprov-team-webpages" id="wpimprov-team-webpages" value="<?php echo esc_attr( get_post_meta( $object->ID, 'wpimprov-team-webpages', true ) ); ?>" size="30" />
-  </p>
-<?php }                                    
-
-
-function wpimprov_meta($post_id, $key){
-  $new_meta_value = ( isset( $_POST[$key] ) ?( $_POST[$key] ) : '' );
-  /* Get the meta value of the custom field key. */
-  $meta_value = get_post_meta( $post_id, $key, true );
-  
-  if ( $new_meta_value && '' == $meta_value )
-    add_post_meta( $post_id, $key, $new_meta_value, true );
-
-  /* If the new meta value does not match the old value, update it. */
-  elseif ( $new_meta_value && $new_meta_value != $meta_value )
-    update_post_meta( $post_id, $key, $new_meta_value );
-
-  /* If there is no new meta value but an old value exists, delete it. */
-  elseif ( '' == $new_meta_value && $meta_value )
-    delete_post_meta( $post_id, $key, $meta_value );
-
+  }
+  return $Result;
 
 }
+
+function wpimprov_meta_box( $object, $box ,$content_type) { 
+   wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); 
+  
+  foreach(wpimprov_field_def($content_type) as $field){
+    $field->render_editor( $object->ID);
+  }
+  
+}
+
+function wpimprov_event_class_meta_box( $object, $box ) { 
+        wpimprov_meta_box( $object, $box,"wpimprov_event");
+        }
+
+function wpimprov_team_class_meta_box( $object, $box ) { 
+        wpimprov_meta_box( $object, $box,"wpimprov_team");
+        }                                    
+
+
 
                                   /* Save the meta box's post metadata. */
 function wpimprov_save_post_class_meta( $post_id, $post ) {
@@ -181,21 +161,12 @@ function wpimprov_save_post_class_meta( $post_id, $post ) {
   /* Check if the current user has permission to edit the post. */
   if ( !current_user_can( $post_type->cap->edit_post, $post_id ) )
     return $post_id;
+  
+  
+  foreach(wpimprov_field_def($post->post_type) as $field){
+    $field->save_from_post( $post_id);
+  }
     
-  switch($post->post_type=="wpimprov_event"){
-  case 'wpimprov-event':
-    wpimprov_meta($post_id,"wpimprov-event-end-time");
-    wpimprov_meta($post_id,"wpimprov-event-start-time");
-    wpimprov_meta($post_id,"wpimprov-event-fb");
-    break;
-  case 'wpimprov-team':
-    wpimprov_meta($post_id,"wpimprov-team-webpages");
-    wpimprov_meta($post_id,"wpimprov-team-fb");
-    break;                                         
-  
- 
-  }    
-  
 }
 
 
