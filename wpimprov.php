@@ -7,6 +7,7 @@
  * Author: Vaclav Cerny
  * Author URI: https://www.facebook.com/vaclav.cerny.12
  * License: MIT
+ * Text Domain: wpimprov
  */
 require 'wpimprov_field.php';
 
@@ -110,6 +111,8 @@ function wpimprov_field_def($content_type){
   switch($content_type){
     case "wpimprov_team":
                  $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
+                 $Result[]=new wpimprov_field('wpimprov-team-web',__( "Webpages", 'wpimprov' ),'text');
+    
     break;
     case "wpimprov_event":
                  $Result[]=new wpimprov_field('wpimprov-event-fb',__( "Facebook event id", 'wpimprov' ),'text');
@@ -119,12 +122,9 @@ function wpimprov_field_def($content_type){
                  $Result[]=new wpimprov_field('wpimprov-event-ticket-uri',__( "Tickets", 'wpimprov' ),'text');
                  $Result[]=new wpimprov_field('wpimprov-event-geo-latitude',__( "Latitude", 'wpimprov' ),'number');
                  $Result[]=new wpimprov_field('wpimprov-event-geo-longitude',__( "Longitude", 'wpimprov' ),'number');
-                 
-                 
+                              
     break;
-                 
-    
-  
+             
   }
   return $Result;
 
