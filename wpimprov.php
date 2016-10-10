@@ -193,13 +193,10 @@ function wpimprov_cron() {
 }
 
 if(is_admin()){
-        add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
- 
-        add_action( 'admin_init', 'wpimprov_settings_init' );
-
+  add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
+  add_action( 'admin_init', 'wpimprov_settings_init' );  
 }
 function wpimprov_add_admin_menu(  ) {
-
         add_menu_page( 'wpimprov', 'wpimprov', 'manage_options', 'wpimprov', 'wpimprov_options_page' );
 
 }
@@ -210,29 +207,110 @@ function wpimprov_settings_init(  ) {
         register_setting( 'pluginPage', 'wpimprov_settings' );
 
         add_settings_section(
-                'wpimprov_pluginPage_section',
-                __( 'My settings', 'wpimprov' ),
+                'wpimprov_pluginPage_section_main',
+                __( 'Main settings', 'wpimprov' ),
                 'wpimprov_settings_section_callback',
                 'pluginPage'
         );
+        
+        
+        add_settings_section(
+                'wpimprov_pluginPage_section_fb',
+                __( 'Facebook settings', 'wpimprov' ),
+                'wpimprov_settings_section_callback',
+                'pluginPage'
+        );
+        
+           add_settings_field(
+                'wpimprov_textarea_sources',
+                __( 'List of sources with legend in form source|description on new lines', 'wpimprov' ),
+                'wpimprov_textarea_field_sources_render',
+                'pluginPage',
+                'wpimprov_pluginPage_section_main'
+        );
 
         add_settings_field(
-                'wpimprov_textarea_field_0',
+                'wpimprov_textarea_tagging',
                 __( 'List of tag selectors in form string|tag on new lines', 'wpimprov' ),
-                'wpimprov_textarea_field_0_render',
+                'wpimprov_textarea_field_tagging_render',
                 'pluginPage',
-                'wpimprov_pluginPage_section'
+                'wpimprov_pluginPage_section_main'
         );
+        
+          add_settings_field(
+                'wpimprov_textarea_fb_app_id',
+                __( 'Facebook App Id', 'wpimprov' ),
+                'wpimprov_textarea_field_fb_app_id_render',
+                'pluginPage',
+                'wpimprov_pluginPage_section_fb'
+        );
+        add_settings_field(
+                'wpimprov_textarea_fb_app_secret',
+                __( 'Facebook App Secret', 'wpimprov' ),
+                'wpimprov_textarea_field_fb_app_secret_render',
+                'pluginPage',
+                'wpimprov_pluginPage_section_fb'
+        );
+        
+        add_settings_field(
+                'wpimprov_textarea_fb_token',
+                __( 'Facebook token', 'wpimprov' ),
+                'wpimprov_textarea_field_fb_token_render',
+                'pluginPage',
+                'wpimprov_pluginPage_section_fb'
+        );
+        
+        
+        
 
 
 }
 
 
-function wpimprov_textarea_field_0_render(  ) {
+function wpimprov_textarea_field_tagging_render(  ) {
 
         $options = get_option( 'wpimprov_settings' );
         ?>
-        <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_field_0]'><?php echo $options['wpimprov_textarea_field_0']; ?></textarea>
+        <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_tagging]'><?php echo $options['wpimprov_textarea_tagging']; ?></textarea>
+        <?php
+
+}
+
+ function wpimprov_textarea_field_sources_render(  ) {
+
+        $options = get_option( 'wpimprov_settings' );
+        ?>
+        <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_sources]'><?php echo $options['wpimprov_textarea_sources']; ?></textarea>
+        <?php
+
+}
+ 
+
+function wpimprov_textarea_field_fb_app_id_render(  ) {
+
+        $options = get_option( 'wpimprov_settings' );
+        ?>
+        <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_fb_app_id]'><?php echo $options['wpimprov_textarea_fb_app_id']; ?></textarea>
+        <?php
+
+}
+
+
+function wpimprov_textarea_field_fb_app_secret_render(  ) {
+
+        $options = get_option( 'wpimprov_settings' );
+        ?>
+        <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_fb_app_secret]'><?php echo $options['wpimprov_textarea_fb_app_secret']; ?></textarea>
+        <?php
+
+}
+
+
+function wpimprov_textarea_field_fb_token_render(  ) {
+
+        $options = get_option( 'wpimprov_settings' );
+        ?>
+        <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_fb_token]'><?php echo $options['wpimprov_textarea_fb_token']; ?></textarea>
         <?php
 
 }
@@ -240,7 +318,7 @@ function wpimprov_textarea_field_0_render(  ) {
 
 function wpimprov_settings_section_callback(  ) {
 
-        echo __( 'Automatic assigning of tags', 'wpimprov' );
+        //echo __( 'Automatic assigning of tags', 'wpimprov' );
 
 }
 
