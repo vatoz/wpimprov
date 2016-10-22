@@ -3,7 +3,7 @@
  * Plugin Name: Improv events & teams 
  * Plugin URI: https://github.com/vatoz/wpimprov
  * Description: Will display events and teams
- * Version: 0.0.1
+ * Version: 0.0.3
  * Author: Vaclav Cerny
  * Author URI: https://www.facebook.com/vaclav.cerny.12
  * License: MIT
@@ -22,9 +22,21 @@ function wpimprov_create_post_type() {
 	'wpimprov_city',
 	'wpimprov_team',
 	array(
-			'label' => __( 'City','wpimprov' ),
-			//'rewrite' => array( 'slug' => 'city' ),
-			'show_ui'           => true,
+                'label' => __( 'City','wpimprov' ),
+                //'rewrite' => array( 'slug' => 'city' ),
+                'show_ui'           => true,
+		'show_admin_column' => true,
+		'hierarchical'=>true,
+	)
+	);
+        
+        register_taxonomy(
+	'wpimprov_event_type',
+	'wpimprov_event',
+	array(
+                'label' => __( 'Type of event','wpimprov' ),
+                //'rewrite' => array( 'slug' => 'city' ),
+                'show_ui'           => true,
 		'show_admin_column' => true,
 		'hierarchical'=>true,
 	)
@@ -32,9 +44,9 @@ function wpimprov_create_post_type() {
 	
 	register_post_type( 'wpimprov_team',
 		array(
-		'labels' => array(
-			'name' => __( 'Improliga teams','wpimprov' ),
-			'singular_name' => __( 'Improliga team','wpimprov' )
+                    'labels' => array(
+                    'name' => __( 'Improliga teams','wpimprov' ),
+                    'singular_name' => __( 'Improliga team','wpimprov' )
 		),
 		'taxonomies'=>array(
 			'wpimprov_city'
@@ -58,6 +70,9 @@ function wpimprov_create_post_type() {
 			'name' => __( 'Improliga events','wpimprov' ),
 			'singular_name' => __( 'Improliga event','wpimprov' )
 		),
+                'taxonomies'=>array(
+			'wpimprov_event_type'
+                ),    
 		"supports"=>array(
 			"title",
 			"editor",
@@ -173,27 +188,90 @@ function wpimprov_save_post_class_meta( $post_id, $post ) {
 register_activation_hook( __FILE__, 'wpimprov_hook_schedule' );
 
 
-add_action( 'wpimprov_hook', 'wpimprov_cron' );
+add_action( 'wpimprov_cron_hook', 'wpimprov_cron' );
 
 
 function wpimprov_hook_schedule(){
   //Use wp_next_scheduled to check if the event is already scheduled
-  $timestamp = wp_next_scheduled( 'wpimprov_cron' );
+  $timestamp = wp_next_scheduled( 'wpimprov_cron_hook' );
 
   //If $timestamp == false schedule daily backups since it hasn't been done previously
   if( $timestamp == false ){
     //Schedule the event for right now, then to repeat daily using the hook 'wi_create_daily_backup'
-    wp_schedule_event( time(), 'daily', 'wpimprov_cron' );
+    wp_schedule_event( time(), 'hourly', 'wpimprov_cron_hook' );
   }
 }
+
+
 
 function wpimprov_cron() {
          //wpimprov_repair(true);
          //wpimprov_repair(false);
+    wpimprov_load_facebook(5, false);
+
 }
 
+
+
+function wpimprov_load_facebook($Limit=5,$Verbose=false)
+{
+        global $wpdb;   
+        $options = get_option( 'wpimprov_settings' );
+			require_once 'fbActions.php';
+			$fa=new fbActions($options['wpimprov_textarea_fb_app_id'],$options['wpimprov_textarea_fb_app_secret'],$options['wpimprov_textarea_fb_token']);
+			
+                        //existing posts    
+			$mame = $wpdb->get_results("SELECT meta_value as id FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-event-fb'",ARRAY_A);
+		
+			$zdroje = $wpdb->get_results("SELECT source,refreshed, DATEDIFF(now(),refreshed) as old  FROM ".$wpdb->prefix ."wpimpro_sources  order by refreshed asc limit " . $Limit,ARRAY_A);
+			
+			foreach($zdroje as $Zdroj) {
+				$S=$Zdroj["source"];
+				$refreshed= $Zdroj["refreshed"];
+                                if($Verbose)echo $S."<br>"; flush();
+				 if ($Zdroj['old']<10) {
+				 		$refreshed='now';
+				 }
+		
+                        $tmp= $fa->getEvents($S, $refreshed);
+				 
+			
+			if($Verbose) var_export($tmp);
+			
+			$tmp2= $fa->getPostsEvents($S);
+			if($Verbose) var_export($tmp2);
+			$events=array_merge($tmp,$tmp2);
+			
+			foreach($events as $Id){
+			    
+			    
+			    $found=false;
+			    foreach($mame as $r ){
+			            if($r['id']==$Id){ 
+			                $found =true; 
+			                //echo "uz je v db , ignoruji".RA;
+			            }
+			    }
+			    
+			    if(!$found){
+			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging']);
+			        $mame[]=array("id"=>$Id);
+			        
+			    }
+			    //var_export ($Row);
+			    
+			}
+				$wpdb->update($wpdb->prefix ."wpimpro_sources",array("refreshed"=>date("Y-m-d")),array('source'=>$S));
+                                        
+                                        
+				if($Verbose)	echo "<hr>";
+			}
+
+}
+
+
 if(is_admin()){
-  add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
+    add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
   add_action( 'admin_init', 'wpimprov_settings_init' );  
 }
 function wpimprov_add_admin_menu(  ) {
@@ -261,9 +339,6 @@ function wpimprov_settings_init(  ) {
         );
         
         
-        
-
-
 }
 
 
@@ -319,7 +394,7 @@ function wpimprov_textarea_field_fb_token_render(  ) {
 function wpimprov_settings_section_callback(  ) {
 
         //echo __( 'Automatic assigning of tags', 'wpimprov' );
-
+    
 }
 
 
@@ -341,6 +416,7 @@ function wpimprov_options_page(  ) {
 
 
         <?php
+                wpimprov_load_facebook(2, true);
        // calendar_from_fb_cron();
         //echo __( 'In near future without tag', 'calendar_from_fb' );
         //echo calendar_from_fb_display_func(array('list'=>'null'));
@@ -351,3 +427,34 @@ function wpimprov_options_page(  ) {
 
 
 
+function wpimprov_install() {
+	global $wpdb;
+	$wp_improv_version=3;
+        $installed= get_option("wpimprov_db_version");
+        if($installed!==$wp_improv_version){
+	$table_name = $wpdb->prefix . 'wpimpro_sources';
+	
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$sql = "
+    CREATE TABLE `$table_name` (
+    `id` bigint(64) NOT NULL,
+    `source` varchar(80) NOT NULL,
+    `description` varchar(80) ,
+    `refreshed` date  NOT NULL DEFAULT '2005-01-01',
+  	UNIQUE KEY id (id)
+)       $charset_collate;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+  
+  
+	update_option( 'wpimprov_db_version', 
+$wp_improv_version );
+        }
+}
+
+
+register_activation_hook( __FILE__, 'wpimprov_install' );
+
+add_action('plugins_loaded','wpimprov_install' );
