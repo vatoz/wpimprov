@@ -55,7 +55,7 @@ private function gt($Request, $print=true){
 private function fb_date_2_local_date($date){
     if(strlen($date)>10){        
         $myDateTime = DateTime::createFromFormat('Y-m-d\TH:i:sO', $date);
-        $myDateTime->setTimezone(new DateTimeZone(get_option('timezone_string')));
+        //$myDateTime->setTimezone(new DateTimeZone(get_option('timezone_string')));
         return  $myDateTime->format('Y-m-d\TH:i:s');
     }else{
         return "";
@@ -63,13 +63,12 @@ private function fb_date_2_local_date($date){
     
 } 
  /*
-Načte z Facebooku jednu událost
-  * @todo implementovat
-  *   */
+Načte z Facebooku jednu událost a uloží jí do databáze
+*/
 
-function wpSaveEvent($Id,$Source,$TagHelper){
+function wpSaveEvent($Id,$Source,$TagHelper, $Description){
 	if(VERBOSE) echo "saveEvent: ".$Id."<br>";
-        $Akce=$this->gt('/'.$Id,false);
+          $Akce=$this->gt('/'.$Id,false);
         $tmp2=$this->gt('/'.$Id.'?fields=cover,ticket_uri,place',false);        
         if(isset($tmp2['ticket_uri'])){
             $Akce['ticket_uri']=$tmp2['ticket_uri'] ;
@@ -113,18 +112,24 @@ function wpSaveEvent($Id,$Source,$TagHelper){
                          'wpimprov-event-venue'=>$data['location'],
                          'wpimprov-event-ticket-uri'=>$data['ticket_uri'],
                          'wpimprov-event-geo-latitude'=>$data['latitude'],
-                         'wpimprov-event-geo-longitude'=>$data['longitude']
+                         'wpimprov-event-geo-longitude'=>$data['longitude'],
+                         'wpimprov-event-source'=>$source,
                     )
                     
                 ),false
                 );
-        
+       
        $t=term_exists($data["keyword"],"wpimprov_event_type");
        if(is_array($t)){
          wp_set_post_terms( $post, array( $t['term_taxonomy_id']), "wpimprov_event_type", true );  
        }
        
-        $this->_wpImage($post,$data["cover"],$data["id"]." - ".$data["name"]);
+       $t=term_exists($Description,"wpimprov_event_team");
+       if(is_array($t)){
+            wp_set_post_terms( $post, array( $t['term_taxonomy_id']), "wpimprov_event_team", true );  
+       }
+       
+       $this->_wpImage($post,$data["cover"],$data["id"]." - ".$data["name"]);
 }
 
 function _wpImage($post_id,$url,$Description){

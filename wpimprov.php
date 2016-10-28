@@ -5,7 +5,7 @@
  * Description: Will display events and teams
  * Version: 0.0.3
  * Author: Vaclav Cerny
- * Author URI: https://www.facebook.com/vaclav.cerny.12
+ * Author URI: https://www.facebook.com/vaclav.cerny.12 
  * License: MIT
  * Text Domain: wpimprov
  */
@@ -18,11 +18,12 @@ Vytvoří taxonomii pro týmy a samotný typ zápisku tým
 Dále vytvoří event
 */
 function wpimprov_create_post_type() {
-	register_taxonomy(
-	'wpimprov_city',
-	'wpimprov_team',
+
+        register_taxonomy(
+	'wpimprov_event_teams',
+	'wpimprov_event',
 	array(
-                'label' => __( 'City','wpimprov' ),
+                'label' => __( 'Teams','wpimprov' ),
                 //'rewrite' => array( 'slug' => 'city' ),
                 'show_ui'           => true,
 		'show_admin_column' => true,
@@ -49,7 +50,6 @@ function wpimprov_create_post_type() {
                     'singular_name' => __( 'Improliga team','wpimprov' )
 		),
 		'taxonomies'=>array(
-			'wpimprov_city'
 			),
 		"supports"=>array(
 			"title",
@@ -71,6 +71,7 @@ function wpimprov_create_post_type() {
 			'singular_name' => __( 'Improliga event','wpimprov' )
 		),
                 'taxonomies'=>array(
+                        "wpimprov_event_team",
 			'wpimprov_event_type'
                 ),    
 		"supports"=>array(
@@ -127,6 +128,7 @@ function wpimprov_field_def($content_type){
     case "wpimprov_team":
                  $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
                  $Result[]=new wpimprov_field('wpimprov-team-web',__( "Webpages", 'wpimprov' ),'text');
+                 $Result[]=new wpimprov_field('wpimprov-team-city',__( "City", 'wpimprov' ),'text');
     
     break;
     case "wpimprov_event":
@@ -137,6 +139,7 @@ function wpimprov_field_def($content_type){
                  $Result[]=new wpimprov_field('wpimprov-event-ticket-uri',__( "Tickets", 'wpimprov' ),'text');
                  $Result[]=new wpimprov_field('wpimprov-event-geo-latitude',__( "Latitude", 'wpimprov' ),'number');
                  $Result[]=new wpimprov_field('wpimprov-event-geo-longitude',__( "Longitude", 'wpimprov' ),'number');
+                 $Result[]=new wpimprov_field('wpimprov-event-source',__( "Source", 'wpimprov' ),'text');
                               
     break;
              
@@ -205,16 +208,14 @@ function wpimprov_hook_schedule(){
 
 
 function wpimprov_cron() {
-         //wpimprov_repair(true);
-         //wpimprov_repair(false);
     wpimprov_load_facebook(5, false);
-
 }
 
 
 
 function wpimprov_load_facebook($Limit=5,$Verbose=false)
 {
+        $saved=0;
         global $wpdb;   
         $options = get_option( 'wpimprov_settings' );
 			require_once 'fbActions.php';
@@ -223,10 +224,11 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
                         //existing posts    
 			$mame = $wpdb->get_results("SELECT meta_value as id FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-event-fb'",ARRAY_A);
 		
-			$zdroje = $wpdb->get_results("SELECT source,refreshed, DATEDIFF(now(),refreshed) as old  FROM ".$wpdb->prefix ."wpimpro_sources  order by refreshed asc limit " . $Limit,ARRAY_A);
+			$zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old  FROM ".$wpdb->prefix ."wpimpro_sources  order by refreshed asc limit " . $Limit,ARRAY_A);
 			
 			foreach($zdroje as $Zdroj) {
 				$S=$Zdroj["source"];
+                                $Description=$Zdroj["description"];
 				$refreshed= $Zdroj["refreshed"];
                                 if($Verbose)echo $S."<br>"; flush();
 				 if ($Zdroj['old']<10) {
@@ -254,9 +256,10 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
 			    }
 			    
 			    if(!$found){
-			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging']);
+			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging'],$Description);
 			        $mame[]=array("id"=>$Id);
-			        
+			       $saved++;
+                               if($saved>$Limit) return 0;
 			    }
 			    //var_export ($Row);
 			    
@@ -298,7 +301,7 @@ function wpimprov_settings_init(  ) {
                 'wpimprov_settings_section_callback',
                 'pluginPage'
         );
-        
+        /*
            add_settings_field(
                 'wpimprov_textarea_sources',
                 __( 'List of sources with legend in form source|description on new lines', 'wpimprov' ),
@@ -306,7 +309,7 @@ function wpimprov_settings_init(  ) {
                 'pluginPage',
                 'wpimprov_pluginPage_section_main'
         );
-
+        */
         add_settings_field(
                 'wpimprov_textarea_tagging',
                 __( 'List of tag selectors in form string|tag on new lines', 'wpimprov' ),
