@@ -240,7 +240,7 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
 			
 			if($Verbose) var_export($tmp);
 			
-			$tmp2= $fa->getPostsEvents($S);
+			$tmp2= $fa->getPostsEvents($S,$refreshed);
 			if($Verbose) var_export($tmp2);
 			$events=array_merge($tmp,$tmp2);
 			
