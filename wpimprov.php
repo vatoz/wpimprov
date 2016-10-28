@@ -20,14 +20,18 @@ Dále vytvoří event
 function wpimprov_create_post_type() {
 
         register_taxonomy(
-	'wpimprov_event_teams',
+	'wpimprov_event_team',
 	'wpimprov_event',
 	array(
                 'label' => __( 'Teams','wpimprov' ),
                 //'rewrite' => array( 'slug' => 'city' ),
                 'show_ui'           => true,
 		'show_admin_column' => true,
-		'hierarchical'=>true,
+		'hierarchical'=>false,
+                'capabilities' => array(
+                    'assign_terms' => 'edit_posts',
+                    'edit_terms' => 'administrator'
+                ),
 	)
 	);
         
@@ -39,7 +43,11 @@ function wpimprov_create_post_type() {
                 //'rewrite' => array( 'slug' => 'city' ),
                 'show_ui'           => true,
 		'show_admin_column' => true,
-		'hierarchical'=>true,
+		'hierarchical'=>false,
+                'capabilities' => array(
+                    'assign_terms' => 'edit_posts',
+                    'edit_terms' => 'administrator'
+                ),
 	)
 	);
 	
@@ -462,3 +470,56 @@ $wp_improv_version );
 register_activation_hook( __FILE__, 'wpimprov_install' );
 
 add_action('plugins_loaded','wpimprov_install' );
+
+function wpimprov_update_custom_terms($post_id) {
+    
+  // only update terms if it's a post-type-B post
+  if ( 'wpimprov_team' != get_post_type($post_id)) {
+    return;
+  }
+
+  // don't create or update terms for system generated posts
+  if (get_post_status($post_id) == 'auto-draft') {
+    return;
+  }
+    
+  /*
+  * Grab the post title and slug to use as the new 
+  * or updated term name and slug
+  */
+  $term_title = get_the_title($post_id);
+  $term_slug = get_post( $post_id )->post_name;
+
+  /*
+  * Check if a corresponding term already exists by comparing 
+  * the post ID to all existing term descriptions. 
+  */
+  $existing_terms = get_terms('wpimprov_event_team', array(
+    'hide_empty' => false
+    )
+  );
+
+  foreach($existing_terms as $term) {
+    if ($term->description == $post_id) {
+      //term already exists, so update it and we're done
+      wp_update_term($term->term_id, 'wpimprov_event_team', array(
+        'name' => $term_title,
+        'slug' => $term_slug
+        )
+      );
+      return;
+    }
+  }
+  error_log("pokus - bude new");
+  /* 
+  * If we didn't find a match above, this is a new post, 
+  * so create a new term.
+  */
+  wp_insert_term($term_title, 'wpimprov_event_team', array(
+    'slug' => $term_slug,
+    'description' => $post_id
+    )
+  );
+}
+
+add_action('save_post', 'wpimprov_update_custom_terms');
