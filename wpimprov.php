@@ -215,6 +215,7 @@ function wpimprov_cron() {
 
 function wpimprov_load_facebook($Limit=5,$Verbose=false)
 {
+        define("VERBOSE",$Verbose);
         $saved=0;
         global $wpdb;   
         $options = get_option( 'wpimprov_settings' );
