@@ -27,7 +27,7 @@ function wpimprov_create_post_type() {
                 //'rewrite' => array( 'slug' => 'city' ),
                 'show_ui'           => true,
 		'show_admin_column' => true,
-		'hierarchical'=>false,
+                'hierarchical'=>true,
                 'capabilities' => array(
                     'assign_terms' => 'edit_posts',
                     'edit_terms' => 'administrator'
@@ -43,11 +43,12 @@ function wpimprov_create_post_type() {
                 //'rewrite' => array( 'slug' => 'city' ),
                 'show_ui'           => true,
 		'show_admin_column' => true,
-		'hierarchical'=>false,
+		'hierarchical'=>true,
                 'capabilities' => array(
                     'assign_terms' => 'edit_posts',
                     'edit_terms' => 'administrator'
                 ),
+                
 	)
 	);
 	
