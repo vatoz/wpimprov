@@ -266,7 +266,9 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
 			    }
 			    
 			    if(!$found){
-			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging'],$Description);
+			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging'],
+                                        wpimprov_hierarchy_id_from_fb_id($S)
+                                        );
 			        $mame[]=array("id"=>$Id);
 			       $saved++;
                                if($saved>$Limit) return 0;
@@ -511,7 +513,6 @@ function wpimprov_update_custom_terms($post_id) {
       return;
     }
   }
-  error_log("pokus - bude new");
   /* 
   * If we didn't find a match above, this is a new post, 
   * so create a new term.
@@ -524,3 +525,23 @@ function wpimprov_update_custom_terms($post_id) {
 }
 
 add_action('save_post', 'wpimprov_update_custom_terms');
+
+
+function wpimprov_hierarchy_id_from_fb_id($fb_id){
+    global $wpdb;
+    $teams = $wpdb->get_results("SELECT post_id  FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-team-fb' and meta_value = '".$fb_id."' ",ARRAY_A);
+    if(isset($teams[0])){
+        $post_id= $teams[0]["post_id"];  
+         $existing_terms = get_terms('wpimprov_event_team', array(
+            'hide_empty' => false
+    ));
+     
+    foreach($existing_terms as $term) {
+        if ($term->description == $post_id) {
+            return $term->term_id;
+        }
+    }   
+     
+   }
+   return 0; 
+}

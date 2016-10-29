@@ -60,13 +60,12 @@ private function fb_date_2_local_date($date){
     }else{
         return "";
     }
-    
 } 
  /*
 Načte z Facebooku jednu událost a uloží jí do databáze
 */
 
-function wpSaveEvent($Id,$Source,$TagHelper, $Description){
+function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
 	if(VERBOSE) echo "saveEvent: ".$Id."<br>";
           $Akce=$this->gt('/'.$Id,false);
         $tmp2=$this->gt('/'.$Id.'?fields=cover,ticket_uri,place',false);        
@@ -124,10 +123,11 @@ function wpSaveEvent($Id,$Source,$TagHelper, $Description){
          wp_set_post_terms( $post, array( $t['term_taxonomy_id']), "wpimprov_event_type", true );  
        }
        
-       $t=term_exists($Description,"wpimprov_event_team");
-       if(is_array($t)){
-            wp_set_post_terms( $post, array( $t['term_taxonomy_id']), "wpimprov_event_team", true );  
+       
+       if($TeamHierarchy>0){
+            wp_set_post_terms( $post, array( $TeamHierarchy), "wpimprov_event_team", true );  
        }
+       
        
        $this->_wpImage($post,$data["cover"],$data["id"]." - ".$data["name"]);
 }
