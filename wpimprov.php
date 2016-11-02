@@ -138,7 +138,8 @@ function wpimprov_field_def($content_type){
                  $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
                  $Result[]=new wpimprov_field('wpimprov-team-web',__( "Webpages", 'wpimprov' ),'text');
                  $Result[]=new wpimprov_field('wpimprov-team-city',__( "City", 'wpimprov' ),'text');
-    
+                 $Result[]=new wpimprov_field('wpimprov-team-refreshed',__( "Refreshed", 'wpimprov' ),'date');
+ 
     break;
     case "wpimprov_event":
                  $Result[]=new wpimprov_field('wpimprov-event-fb',__( "Facebook event id", 'wpimprov' ),'text');
@@ -220,64 +221,87 @@ function wpimprov_cron() {
     wpimprov_load_facebook(5, false);
 }
 
+function wpimprov_get_loaded(){
+    global $wpdb;    
+    //existing  autosaved posts    
+    return $wpdb->get_results("SELECT meta_value as id FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-event-fb'",ARRAY_A);
 
+}
+
+
+
+function wpimprov_load_facebook_source($fa,$Source,$Refreshed=null,$Verbose=false,$Taxonomy=0,$Limit=3){
+     $options = get_option( 'wpimprov_settings' );
+	                
+    $mame=  wpimprov_get_loaded(); 
+    $saved=0;    
+    if($Verbose)echo $Source."<br>"; flush();
+
+        $tmp= $fa->getEvents($Source, $Refreshed);
+
+
+        if($Verbose) var_export($tmp);
+
+        $tmp2= $fa->getPostsEvents($Source,$Refreshed);
+        if($Verbose) var_export($tmp2);
+        $events=array_merge($tmp,$tmp2);
+
+        foreach($events as $Id){
+            $found=false;
+            foreach($mame as $r ){
+                    if($r['id']==$Id){ 
+                        $found =true; 
+                        //echo "uz je v db , ignoruji".RA;
+                    }
+            }
+
+            if(!$found){
+                $fa->wpSaveEvent($Id, $Source,$options['wpimprov_textarea_tagging'],
+                        $Taxonomy
+                        );
+                $mame[]=array("id"=>$Id);
+               $saved++;
+               if($saved>$Limit) return false;
+            }
+
+        }
+    return true;
+}
 
 function wpimprov_load_facebook($Limit=5,$Verbose=false)
 {
         define("VERBOSE",$Verbose);
         $saved=0;
         global $wpdb;   
+        
+                        
         $options = get_option( 'wpimprov_settings' );
 			require_once 'fbActions.php';
 			$fa=new fbActions($options['wpimprov_textarea_fb_app_id'],$options['wpimprov_textarea_fb_app_secret'],$options['wpimprov_textarea_fb_token']);
 			
-                        //existing posts    
-			$mame = $wpdb->get_results("SELECT meta_value as id FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-event-fb'",ARRAY_A);
-		
-			$zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old  FROM ".$wpdb->prefix ."wpimpro_sources  order by refreshed asc limit " . $Limit,ARRAY_A);
+                        
+                        $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from ".$wpdb->prefix ."postmeta where meta_key='wpimprov-team-fb' ) fb left join (select * from ".$wpdb->prefix ."postmeta where meta_key='wpimprov-team-refreshed') dt  on fb.post_id=dt.post_id    order by refreshed asc limit " . $Limit,ARRAY_A);
+			foreach($zdroje as $Zdroj) {
+                            if( wpimprov_load_facebook_source($fa,$Zdroj["source"],$Zdroj["refreshed"],$Verbose,wpimprov_taxonomy_from_post($Zdroj['post_id'],$Limit))){
+                    
+				$wpdb->update($wpdb->prefix ."postmeta",array("meta_value"=>date("Y-m-d")),array('post_id'=>$Zdroj["post_id"],"meta_key"=>"wpimprov-team-refreshed"));
+                            }else{
+                                return;
+                            }        
+                                        
+				if($Verbose)	echo "<hr>";
+			}
+                        
+                        
+                        $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old  FROM ".$wpdb->prefix ."wpimpro_sources  order by refreshed asc limit " . $Limit,ARRAY_A);
 			
 			foreach($zdroje as $Zdroj) {
-				$S=$Zdroj["source"];
-                                $Description=$Zdroj["description"];
-				$refreshed= $Zdroj["refreshed"];
-                                if($Verbose)echo $S."<br>"; flush();
-				 if ($Zdroj['old']<10) {
-				 		$refreshed='now';
-				 }
-		
-                        $tmp= $fa->getEvents($S, $refreshed);
-				 
-			
-			if($Verbose) var_export($tmp);
-			
-			$tmp2= $fa->getPostsEvents($S,$refreshed);
-			if($Verbose) var_export($tmp2);
-			$events=array_merge($tmp,$tmp2);
-			
-			foreach($events as $Id){
-			    
-			    
-			    $found=false;
-			    foreach($mame as $r ){
-			            if($r['id']==$Id){ 
-			                $found =true; 
-			                //echo "uz je v db , ignoruji".RA;
-			            }
-			    }
-			    
-			    if(!$found){
-			        $fa->wpSaveEvent($Id, $S,$options['wpimprov_textarea_tagging'],
-                                        wpimprov_hierarchy_id_from_fb_id($S)
-                                        );
-			        $mame[]=array("id"=>$Id);
-			       $saved++;
-                               if($saved>$Limit) return 0;
-			    }
-			    //var_export ($Row);
-			    
-			}
-				$wpdb->update($wpdb->prefix ."wpimpro_sources",array("refreshed"=>date("Y-m-d")),array('source'=>$S));
-                                        
+                            if( wpimprov_load_facebook_source($fa,$Zdroj["source"],$Zdroj["refreshed"],$Verbose,0,$Limit)){
+                    
+				$wpdb->update($wpdb->prefix ."wpimpro_sources",array("refreshed"=>date("Y-m-d")),array('source'=>$Zdroj["source"]));
+                            }else     {
+                                return;
+                            }   
                                         
 				if($Verbose)	echo "<hr>";
 			}
@@ -287,7 +311,7 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
 
 if(is_admin()){
     add_action( 'admin_menu', 'wpimprov_add_admin_menu' );
-  add_action( 'admin_init', 'wpimprov_settings_init' );  
+    add_action( 'admin_init', 'wpimprov_settings_init' );  
 }
 function wpimprov_add_admin_menu(  ) {
         add_menu_page( 'wpimprov', 'wpimprov', 'manage_options', 'wpimprov', 'wpimprov_options_page' );
@@ -473,6 +497,22 @@ $wp_improv_version );
 register_activation_hook( __FILE__, 'wpimprov_install' );
 
 add_action('plugins_loaded','wpimprov_install' );
+
+function wpimprov_taxonomy_from_post($post_id){
+    
+  $existing_terms = get_terms('wpimprov_event_team', array(
+    'hide_empty' => false
+    )
+  );
+
+  foreach($existing_terms as $term) {
+    if ($term->description == $post_id) {
+        return $term->term_id;
+      
+    }
+  }
+    
+}
 
 function wpimprov_update_custom_terms($post_id) {
     
