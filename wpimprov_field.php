@@ -25,19 +25,8 @@ function render_editor($post_id) {
 
 function save_from_post($post_id){
   $new_meta_value = ( isset( $_POST[$this->key] ) ?( $_POST[$this->key] ) : '' );
-  /* Get the meta value of the custom field key. */
-  $meta_value = get_post_meta( $post_id, $this->key, true );
+   return wpimprov_meta_save($post_id,$this->key,$new_meta_value);
   
-  if ( $new_meta_value && '' == $meta_value )
-    add_post_meta( $post_id, $this->key, $new_meta_value, true );
-
-  /* If the new meta value does not match the old value, update it. */
-  elseif ( $new_meta_value && $new_meta_value != $meta_value )
-    update_post_meta( $post_id, $this->key, $new_meta_value );
-
-  /* If there is no new meta value but an old value exists, delete it. */
-  elseif ( '' == $new_meta_value && $meta_value )
-    delete_post_meta( $post_id, $this->key, $meta_value );
-  }
+}
 
 }

@@ -282,9 +282,13 @@ function wpimprov_load_facebook($Limit=5,$Verbose=false)
                         
                         $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from ".$wpdb->prefix ."postmeta where meta_key='wpimprov-team-fb' ) fb left join (select * from ".$wpdb->prefix ."postmeta where meta_key='wpimprov-team-refreshed') dt  on fb.post_id=dt.post_id    order by refreshed asc limit " . $Limit,ARRAY_A);
 			foreach($zdroje as $Zdroj) {
+                            if(is_null( $Zdroj["refreshed"])||strlen($Zdroj["refreshed"])<10){
+                                $Zdroj["refreshed"]="2010-01-01";
+                            }
                             if( wpimprov_load_facebook_source($fa,$Zdroj["source"],$Zdroj["refreshed"],$Verbose,wpimprov_taxonomy_from_post($Zdroj['post_id'],$Limit))){
-                    
-				$wpdb->update($wpdb->prefix ."postmeta",array("meta_value"=>date("Y-m-d")),array('post_id'=>$Zdroj["post_id"],"meta_key"=>"wpimprov-team-refreshed"));
+                   
+                                wpimprov_meta_save($Zdroj["post_id"], "wpimprov-team-refreshed",date("Y-m-d"));
+                                
                             }else{
                                 return;
                             }        
@@ -566,6 +570,21 @@ function wpimprov_update_custom_terms($post_id) {
 
 add_action('save_post', 'wpimprov_update_custom_terms');
 
+function wpimprov_meta_save($post_id,$key,$new_meta_value){
+  /* Get the meta value of the custom field key. */
+  $meta_value = get_post_meta( $post_id, $key, true );
+  
+  if ( $new_meta_value && '' == $meta_value )
+    add_post_meta( $post_id, $key, $new_meta_value, true );
+
+  /* If the new meta value does not match the old value, update it. */
+  elseif ( $new_meta_value && $new_meta_value != $meta_value )
+    update_post_meta( $post_id, $key, $new_meta_value );
+
+  /* If there is no new meta value but an old value exists, delete it. */
+  elseif ( '' == $new_meta_value && $meta_value )
+    delete_post_meta( $post_id, $key, $meta_value );
+  }
 
 function wpimprov_hierarchy_id_from_fb_id($fb_id){
     global $wpdb;
