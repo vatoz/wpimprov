@@ -14,8 +14,7 @@ require 'wpimprov_field.php';
 add_action( 'init', 'wpimprov_create_post_type' );
 
 /*
-Vytvoří taxonomii pro týmy a samotný typ zápisku tým
-Dále vytvoří event
+Create post types and associated taxonomies
 */
 function wpimprov_create_post_type() {
 
@@ -109,7 +108,7 @@ function wpimprov_meta_boxes_setup() {
   add_action( 'save_post', 'wpimprov_save_post_class_meta', 10, 2 );
 }
 
-/* Create one or more meta boxes to be displayed on the post editor screen. */
+/* Create few meta boxes to be displayed on the post editor screen. */
 function wpimprov_add_post_meta_boxes() {
 
   add_meta_box(
@@ -131,53 +130,51 @@ function wpimprov_add_post_meta_boxes() {
   );
   
 }
+
+/*Will return array() of wpimprov_field
+ * @param string content_type Usually wpimprov_team or wpimprov_event 
+ */
 function wpimprov_field_def($content_type){
  $Result=array();
   switch($content_type){
     case "wpimprov_team":
-                 $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-team-web',__( "Webpages", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-team-city',__( "City", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-team-refreshed',__( "Refreshed", 'wpimprov' ),'date');
- 
+        $Result[]=new wpimprov_field('wpimprov-team-fb',__( "Facebook id", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-team-web',__( "Webpages", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-team-city',__( "City", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-team-refreshed',__( "Refreshed", 'wpimprov' ),'date');
     break;
     case "wpimprov_event":
-                 $Result[]=new wpimprov_field('wpimprov-event-fb',__( "Facebook event id", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-event-start-time',__( "Start time", 'wpimprov' ),'datetime-local');
-                 $Result[]=new wpimprov_field('wpimprov-event-end-time',__( "End time", 'wpimprov' ),'datetime-local');
-                 $Result[]=new wpimprov_field('wpimprov-event-venue',__( "Venue", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-event-ticket-uri',__( "Tickets", 'wpimprov' ),'text');
-                 $Result[]=new wpimprov_field('wpimprov-event-geo-latitude',__( "Latitude", 'wpimprov' ),'number');
-                 $Result[]=new wpimprov_field('wpimprov-event-geo-longitude',__( "Longitude", 'wpimprov' ),'number');
-                 $Result[]=new wpimprov_field('wpimprov-event-source',__( "Source", 'wpimprov' ),'text');
-                              
-    break;
-             
+        $Result[]=new wpimprov_field('wpimprov-event-fb',__( "Facebook event id", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-event-start-time',__( "Start time", 'wpimprov' ),'datetime-local');
+        $Result[]=new wpimprov_field('wpimprov-event-end-time',__( "End time", 'wpimprov' ),'datetime-local');
+        $Result[]=new wpimprov_field('wpimprov-event-venue',__( "Venue", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-event-ticket-uri',__( "Tickets", 'wpimprov' ),'text');
+        $Result[]=new wpimprov_field('wpimprov-event-geo-latitude',__( "Latitude", 'wpimprov' ),'number');
+        $Result[]=new wpimprov_field('wpimprov-event-geo-longitude',__( "Longitude", 'wpimprov' ),'number');
+        $Result[]=new wpimprov_field('wpimprov-event-source',__( "Source", 'wpimprov' ),'text');                              
+    break;            
   }
   return $Result;
-
 }
 
 function wpimprov_meta_box( $object, $box ,$content_type) { 
-   wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' ); 
-  
+   wp_nonce_field( basename( __FILE__ ), 'wpimpro_nonce' );   
   foreach(wpimprov_field_def($content_type) as $field){
     $field->render_editor( $object->ID);
   }
-  
 }
 
 function wpimprov_event_class_meta_box( $object, $box ) { 
-        wpimprov_meta_box( $object, $box,"wpimprov_event");
-        }
+    wpimprov_meta_box( $object, $box,"wpimprov_event");
+}
 
 function wpimprov_team_class_meta_box( $object, $box ) { 
-        wpimprov_meta_box( $object, $box,"wpimprov_team");
-        }                                    
+    wpimprov_meta_box( $object, $box,"wpimprov_team");
+}                                    
 
 
 
-                                  /* Save the meta box's post metadata. */
+/* Save the meta box's post metadata. */
 function wpimprov_save_post_class_meta( $post_id, $post ) {
   /* Verify the nonce before proceeding. */
   if ( !isset( $_POST['wpimpro_nonce'] ) || !wp_verify_nonce( $_POST['wpimpro_nonce'], basename( __FILE__ ) ) )
@@ -200,14 +197,13 @@ function wpimprov_save_post_class_meta( $post_id, $post ) {
 
 register_activation_hook( __FILE__, 'wpimprov_hook_schedule' );
 
-
 add_action( 'wpimprov_cron_hook', 'wpimprov_cron' );
 
-
+/*Will set schedule for cron hook.
+ */
 function wpimprov_hook_schedule(){
   //Use wp_next_scheduled to check if the event is already scheduled
   $timestamp = wp_next_scheduled( 'wpimprov_cron_hook' );
-
   //If $timestamp == false schedule daily backups since it hasn't been done previously
   if( $timestamp == false ){
     //Schedule the event for right now, then to repeat daily using the hook 'wi_create_daily_backup'
@@ -216,16 +212,19 @@ function wpimprov_hook_schedule(){
 }
 
 
-
+/*Function iscalled regullary,
+ * it will load events from facebook
+ */
 function wpimprov_cron() {
     wpimprov_load_facebook(5, false);
 }
 
+/*Get wpimprov-event-fb meta values,
+ *we dont want events again
+ */
 function wpimprov_get_loaded(){
-    global $wpdb;    
-    //existing  autosaved posts    
+    global $wpdb;        
     return $wpdb->get_results("SELECT meta_value as id FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-event-fb'",ARRAY_A);
-
 }
 
 
@@ -459,7 +458,7 @@ function wpimprov_options_page(  ) {
 
 
         <?php
-                wpimprov_load_facebook(2, true);
+       //wpimprov_load_facebook(2, true);
        // calendar_from_fb_cron();
         //echo __( 'In near future without tag', 'calendar_from_fb' );
         //echo calendar_from_fb_display_func(array('list'=>'null'));
@@ -468,7 +467,8 @@ function wpimprov_options_page(  ) {
 
 
 
-
+/* Create table for sources
+ */
 
 function wpimprov_install() {
 	global $wpdb;
@@ -502,8 +502,11 @@ register_activation_hook( __FILE__, 'wpimprov_install' );
 
 add_action('plugins_loaded','wpimprov_install' );
 
-function wpimprov_taxonomy_from_post($post_id){
-    
+/* Will find taxonomy term id based on wpimprov_team post_id
+ * @return int Taxonomy id
+ * @param int post_id
+ */
+function wpimprov_taxonomy_from_post($post_id){   
   $existing_terms = get_terms('wpimprov_event_team', array(
     'hide_empty' => false
     )
@@ -512,24 +515,23 @@ function wpimprov_taxonomy_from_post($post_id){
   foreach($existing_terms as $term) {
     if ($term->description == $post_id) {
         return $term->term_id;
-      
     }
   }
     
 }
 
+/*Is called on post's save
+ *and it will update or create associated term in taxonomy
+ */
 function wpimprov_update_custom_terms($post_id) {
-    
   // only update terms if it's a post-type-B post
   if ( 'wpimprov_team' != get_post_type($post_id)) {
     return;
   }
-
   // don't create or update terms for system generated posts
   if (get_post_status($post_id) == 'auto-draft') {
     return;
-  }
-    
+  } 
   /*
   * Grab the post title and slug to use as the new 
   * or updated term name and slug
@@ -570,6 +572,9 @@ function wpimprov_update_custom_terms($post_id) {
 
 add_action('save_post', 'wpimprov_update_custom_terms');
 
+/*
+Save meta value for post
+ */
 function wpimprov_meta_save($post_id,$key,$new_meta_value){
   /* Get the meta value of the custom field key. */
   $meta_value = get_post_meta( $post_id, $key, true );
@@ -585,22 +590,3 @@ function wpimprov_meta_save($post_id,$key,$new_meta_value){
   elseif ( '' == $new_meta_value && $meta_value )
     delete_post_meta( $post_id, $key, $meta_value );
   }
-
-function wpimprov_hierarchy_id_from_fb_id($fb_id){
-    global $wpdb;
-    $teams = $wpdb->get_results("SELECT post_id  FROM ".$wpdb->prefix ."postmeta where meta_key = 'wpimprov-team-fb' and meta_value = '".$fb_id."' ",ARRAY_A);
-    if(isset($teams[0])){
-        $post_id= $teams[0]["post_id"];  
-         $existing_terms = get_terms('wpimprov_event_team', array(
-            'hide_empty' => false
-    ));
-     
-    foreach($existing_terms as $term) {
-        if ($term->description == $post_id) {
-            return $term->term_id;
-        }
-    }   
-     
-   }
-   return 0; 
-}
