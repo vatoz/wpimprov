@@ -135,6 +135,8 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-team-fb', __("Facebook id", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-team-web', __("Webpages", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-team-city', __("City", 'wpimprov'), 'text');
+            $Result[] = new wpimprov_field('wpimprov-team-alias', __("Alias", 'wpimprov'), 'text');
+            
             $Result[] = new wpimprov_field('wpimprov-team-refreshed', __("Refreshed", 'wpimprov'), 'date');
             break;
         case "wpimprov_event":
