@@ -635,3 +635,8 @@ function wpimprov_display_func( $atts ){
 
 }
 
+
+add_action('plugins_loaded', 'wpimprov_load_textdomain');
+function wpimprov_load_textdomain() {
+	load_plugin_textdomain( 'wpimprov', false, dirname( plugin_basename(__FILE__) )  );
+}

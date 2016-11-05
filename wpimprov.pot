@@ -1,0 +1,141 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-05 16:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: wpimprov.php:24
+msgid "Teams"
+msgstr ""
+
+#: wpimprov.php:38
+msgid "Type of event"
+msgstr ""
+
+#: wpimprov.php:52
+msgid "Improliga teams"
+msgstr ""
+
+#: wpimprov.php:53
+msgid "Improliga team"
+msgstr ""
+
+#: wpimprov.php:72
+msgid "Improliga events"
+msgstr ""
+
+#: wpimprov.php:73
+msgid "Improliga event"
+msgstr ""
+
+#. Unique ID
+#: wpimprov.php:110
+msgid "Event details"
+msgstr ""
+
+#. Unique ID
+#: wpimprov.php:119
+msgid "Team details"
+msgstr ""
+
+#: wpimprov.php:135
+msgid "Facebook id"
+msgstr ""
+
+#: wpimprov.php:136
+msgid "Webpages"
+msgstr ""
+
+#: wpimprov.php:137
+msgid "City"
+msgstr ""
+
+#: wpimprov.php:138
+msgid "Refreshed"
+msgstr ""
+
+#: wpimprov.php:141
+msgid "Facebook event id"
+msgstr ""
+
+#: wpimprov.php:142
+msgid "Start time"
+msgstr ""
+
+#: wpimprov.php:143
+msgid "End time"
+msgstr ""
+
+#: wpimprov.php:144
+msgid "Venue"
+msgstr ""
+
+#: wpimprov.php:145
+msgid "Tickets"
+msgstr ""
+
+#: wpimprov.php:146
+msgid "Latitude"
+msgstr ""
+
+#: wpimprov.php:147
+msgid "Longitude"
+msgstr ""
+
+#: wpimprov.php:148
+msgid "Source"
+msgstr ""
+
+#: wpimprov.php:321
+msgid "Main settings"
+msgstr ""
+
+#: wpimprov.php:326
+msgid "Facebook settings"
+msgstr ""
+
+#: wpimprov.php:338
+msgid "List of tag selectors in form string|tag on new lines"
+msgstr ""
+
+#: wpimprov.php:342
+msgid "Facebook App Id"
+msgstr ""
+
+#: wpimprov.php:345
+msgid "Facebook App Secret"
+msgstr ""
+
+#: wpimprov.php:349
+msgid "Facebook token"
+msgstr ""
+
+#. Name of the plugin
+msgid "Improv events & teams"
+msgstr ""
+
+#. Description of the plugin
+msgid "Will display events and teams"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/vatoz/wpimprov"
+msgstr ""
+
+#. Author of the plugin
+msgid "Vaclav Cerny"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.facebook.com/vaclav.cerny.12"
+msgstr ""
