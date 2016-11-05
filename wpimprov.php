@@ -640,3 +640,77 @@ add_action('plugins_loaded', 'wpimprov_load_textdomain');
 function wpimprov_load_textdomain() {
 	load_plugin_textdomain( 'wpimprov', false, dirname( plugin_basename(__FILE__) )  );
 }
+
+
+
+
+function wpimprov_team_calendar($post_id  ){
+    
+        $future=wpimprov_display_t_internal($post_id,true);
+        $past=wpimprov_display_t_internal($post_id,false);
+        
+        
+        return '<div>'.
+                ($future?"<h1>".__('Future events', 'wpimprov')."</h1>".$future:__('No future events', 'wpimprov'))
+                
+                .
+                
+                ($past?"<h1>".__('Past events', 'wpimprov')."</h1>".$past:__('No past events', 'wpimprov'))
+                
+        .
+              "</div>"  
+                ;
+        
+}
+
+function wpimprov_display_t_internal( $post_id,$future=true ){
+		
+	$date = new DateTime("now");
+	
+        
+        $args = array(
+        'post_type' => 'wpimprov_event',
+        'tax_query' => array(
+            array(
+            'taxonomy' => 'wpimprov_event_team',
+            'field' => 'id',
+            'terms' => wpimprov_taxonomy_from_post($post_id)
+             )
+        ),
+        
+	'posts_per_page'         => 150,    
+        'meta_query'=>array(
+            'key' => 'wpimprov-event-start-time',    
+            'value'=>$date->format('Y-m-d'),
+            'compare'=>$future?'>=':'<',
+        ),    
+        'orderby'  => array( 'meta_value' => $future?'ASC':'DESC', 'title' => 'ASC' ),
+	'meta_key' => 'wpimprov-event-start-time'    
+        );
+        
+        $query2 = new WP_Query( $args ); 
+        $result="";
+           
+        if ( $query2->have_posts() ) {
+	// The 2nd Loop
+	while ( $query2->have_posts() ) {
+		$query2->the_post();
+                
+		$result.='<div class=wpimprov_event>';
+                $result.= get_the_post_thumbnail( $query2->post->ID, 'thumbnail' );
+                $result.= '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
+                //$result.=var_export($query2->post,true);
+               
+                
+                $meta=get_post_meta($query2->post->ID, '', true);
+                $result.= $meta['wpimprov-event-start-time'][0].'<br>';
+                
+                $result.= $meta['wpimprov-event-venue'][0].'<br>';
+                $result.= '</div>';
+                //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
+	}
+        
+         return $result;
+}
+
+}
