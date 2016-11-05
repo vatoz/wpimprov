@@ -87,7 +87,7 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
         $tmp2=(array)$tmp2['place'];
         
         $tmp3=(array)$tmp2['location'];
-        $data['location']= $tmp2['name'].", ".$tmp3['street'];
+        $data['location']= $tmp2['name'].", ".$tmp3['street'] .", ".$tmp3['city'];
         $data['latitude']=$tmp3['latitude'];
         $data['longitude']=$tmp3['longitude'];
  
