@@ -272,8 +272,35 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
     $options = get_option('wpimprov_settings');
     require_once 'fbActions.php';
     $fa = new fbActions($options['wpimprov_textarea_fb_app_id'], $options['wpimprov_textarea_fb_app_secret'], $options['wpimprov_textarea_fb_token']);
+    
+    $loaded=0;
+    $mame= wpimprov_get_loaded();
+    $toload= explode("\n",$options['wpimprov_textarea_fbimport']);
+    foreach($toload as $key=>$candidate){
+        $candidate=trim($candidate);
+        $found = false;
+        if($Verbose) echo $candidate."<br>";
+        foreach ($mame as $r) {
+            if ($r['id'] == $candidate) {
+                $found = true;
+                unset($toload[$key]);
+             if($Verbose) echo $candidate." vyrazuji<br>";
+               
+                //echo "uz je v db , ignoruji".RA;
+            }
+        }
+        if(!$found){
+            $fa->wpSaveEvent($candidate, "___", $options['wpimprov_textarea_tagging']);
+            $mame++;
+            if($mame>=$Limit) return;
+            
+        }
+    }
+    
+        update_option('wpimprov_textarea_fbimport', implode("\n",$toload));
 
-
+    
+    
     $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-fb' ) fb left join (select * from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-refreshed') dt  on fb.post_id=dt.post_id    order by refreshed asc limit " . $Limit, ARRAY_A);
     foreach ($zdroje as $Zdroj) {
         if (is_null($Zdroj["refreshed"]) || strlen($Zdroj["refreshed"]) < 10) {
@@ -339,6 +366,9 @@ function wpimprov_settings_init() {
     add_settings_field(
             'wpimprov_textarea_tagging', __('List of tag selectors in form string|tag on new lines', 'wpimprov'), 'wpimprov_textarea_field_tagging_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
     );
+    add_settings_field(
+            'wpimprov_textarea_fbimport', __('List of event ids to be imported', 'wpimprov'), 'wpimprov_textarea_field_fbimport_render', 'pluginPage', 'wpimprov_pluginPage_section_fb'
+    );
 
     add_settings_field(
             'wpimprov_textarea_fb_app_id', __('Facebook App Id', 'wpimprov'), 'wpimprov_textarea_field_fb_app_id_render', 'pluginPage', 'wpimprov_pluginPage_section_fb'
@@ -373,6 +403,14 @@ function wpimprov_textarea_field_fb_app_id_render() {
     $options = get_option('wpimprov_settings');
     ?>
     <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_fb_app_id]'><?php echo $options['wpimprov_textarea_fb_app_id']; ?></textarea>
+    <?php
+}
+
+
+function wpimprov_textarea_field_fbimport_render() {
+    $options = get_option('wpimprov_settings');
+    ?>
+    <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_fbimport]'><?php echo $options['wpimprov_textarea_fbimport']; ?></textarea>
     <?php
 }
 
@@ -414,7 +452,7 @@ function wpimprov_options_page() {
 
 
     <?php
-    //wpimprov_load_facebook(2, true);
+    wpimprov_load_facebook(2, true);
     // calendar_from_fb_cron();
     //echo __( 'In near future without tag', 'calendar_from_fb' );
     //echo calendar_from_fb_display_func(array('list'=>'null'));

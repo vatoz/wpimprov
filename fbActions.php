@@ -112,7 +112,7 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
                          'wpimprov-event-ticket-uri'=>$data['ticket_uri'],
                          'wpimprov-event-geo-latitude'=>$data['latitude'],
                          'wpimprov-event-geo-longitude'=>$data['longitude'],
-                         'wpimprov-event-source'=>$source,
+                         'wpimprov-event-source'=>$Source,
                     )
                     
                 ),false
