@@ -290,14 +290,15 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
             }
         }
         if(!$found){
+            if (strlen($candidate)>7){
             $fa->wpSaveEvent($candidate, "___", $options['wpimprov_textarea_tagging']);
             $mame++;
             if($mame>=$Limit) return;
-            
+            }
         }
     }
-    
-        update_option('wpimprov_textarea_fbimport', implode("\n",$toload));
+    $options[  'wpimprov_textarea_fbimport']= "ahoj"."/n".implode("\n",$toload);
+        update_option("wpimprov_settings",$options);
 
     
     
