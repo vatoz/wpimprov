@@ -297,7 +297,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
             }
         }
     }
-    $options[  'wpimprov_textarea_fbimport']= "ahoj"."/n".implode("\n",$toload);
+    $options[  'wpimprov_textarea_fbimport']= implode("\n",$toload);
         update_option("wpimprov_settings",$options);
 
     
