@@ -301,8 +301,12 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
         update_option("wpimprov_settings",$options);
 
     
-    
-    $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-fb' ) fb left join (select * from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-refreshed') dt  on fb.post_id=dt.post_id    order by refreshed asc limit " . $Limit, ARRAY_A);
+
+    $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from "
+            . "" . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-fb' )"
+            . " fb left join (select * from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-refreshed') dt  on fb.post_id=dt.post_id  "
+            . "where dt.meta_value in(select min(meta_value) from " . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-refreshed')"
+            . "or dt.meta_value is null  order by rand() limit " . $Limit, ARRAY_A);
     foreach ($zdroje as $Zdroj) {
         if (is_null($Zdroj["refreshed"]) || strlen($Zdroj["refreshed"]) < 10) {
             $Zdroj["refreshed"] = "2010-01-01";
@@ -319,7 +323,8 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
     }
 
 
-    $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old  FROM " . $wpdb->prefix . "wpimpro_sources  order by refreshed asc limit " . $Limit, ARRAY_A);
+    $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old "
+            . " FROM " . $wpdb->prefix . "wpimpro_sources  where refreshed<date(now()) order by rand() limit " . $Limit, ARRAY_A);
 
     foreach ($zdroje as $Zdroj) {
         if (wpimprov_load_facebook_source($fa, $Zdroj["source"], $Zdroj["refreshed"], $Verbose, 0, $Limit)) {
@@ -645,32 +650,45 @@ function wpimprov_display_func( $atts ){
 	}
         
         
-        $result.="<table>";
+        $result.="<div class=wpimprov_large_calendar>";
 	
 	$date = new DateTime("now");
 	if ($date->format('N')>1)$date->sub(new DateInterval("P".($date->format('N')-1)."D"));
 		
 	for($i=0;$i<5;$i++){
-	$result.="<tr class='week row'>";
+	$result.="<div class='wpimprov_week '>";
 	for($j=0;$j<7;$j++){
-            $result.=  "<td class='day'>";		
+            $result.=  "<div class='wpimprov_day'>";		
             $result.= "<h2 >";
-            $result.=$date->format('d.m.') ;
+            $result.=$date->format('D d.m.') ;
             $result.= "</h2>\n";
             //$result.=calendar_from_fb_date($date->format('Y-m-d'),$atts["list"]);
             if(isset($posts_ar[$date->format('Y-m-d')]) ){
                 $result.=implode(" ",$posts_ar[$date->format('Y-m-d')]);
-                
+               
             }
             
-            $result.= "</td>";
+            $result.= "</div>";//day
             $date->add(new DateInterval("P1D"));	
 	}
-	$result.="</tr>";
+	$result.="</div>";//week
 	
 	}
-	 	$result.="</table>";
-
+	 	$result.="</div>";//calendar
+        $result.=<<<style
+                <style type="text/css">
+@media (min-width: 800px) {
+  .wpimprov_day {
+        width: 14%; display:block;float:left;
+    }
+  .wpimprov_week {clear:both}              
+  .wpimprov_large_calendar h2{
+    font-size:22px;   
+   }              
+}</style>
+                
+style;
+                
          return $result;
 }
 
