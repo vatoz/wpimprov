@@ -633,19 +633,19 @@ function wpimprov_display_func( $atts ){
 	// The 2nd Loop
 	while ( $query2->have_posts() ) {
 		$query2->the_post();
-                
-		$result2='<div class=wpimprov_event>';
-                $result2.= get_the_post_thumbnail( $post_id, 'thumbnail' );
-                $result2.= '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
+                ob_start();
+		echo '<div class="wpimprov_event">';
+                echo wpimprov_responsive_image();
+                echo  '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
                 //$result.=var_export($query2->post,true);
                
                 
                 $meta=get_post_meta($query2->post->ID, '', true);
-                $result2.= $meta['wpimprov-event-start-time'][0].'<br>';
+                echo  $meta['wpimprov-event-start-time'][0].'<br>';
                 
-                $result2.= $meta['wpimprov-event-venue'][0].'<br>';
-                $result2.= '</div>';
-                $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=$result2;
+                echo  $meta['wpimprov-event-venue'][0].'<br>';
+                echo  '</div>';
+                $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}
         
@@ -700,7 +700,23 @@ function wpimprov_load_textdomain() {
 	load_plugin_textdomain( 'wpimprov', false, dirname( plugin_basename(__FILE__) )  );
 }
 
-
+function wpimprov_responsive_image(){
+    ob_start();
+    echo '<img src="';
+                the_post_thumbnail_url("w_300");
+                echo '" srcset="';  
+                the_post_thumbnail_url("w_100");
+                echo " 100w, ";        
+                the_post_thumbnail_url("w_300"); 
+                echo " 300w, ";
+                the_post_thumbnail_url("w_800");
+                echo " 800w, ";
+        
+                the_post_thumbnail_url("w_1200");
+                echo " 1200w ";
+                echo '" class=img-responsive>';
+    return ob_get_clean();
+}
 
 
 function wpimprov_team_calendar($post_id  ){
@@ -756,7 +772,10 @@ function wpimprov_display_t_internal( $post_id,$future=true ){
 		$query2->the_post();
                 
 		$result.='<div class=wpimprov_event>';
-                $result.= get_the_post_thumbnail( $query2->post->ID, 'thumbnail' );
+                
+                $result.=wpimprov_responsive_image();
+                
+                
                 $result.= '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
                 //$result.=var_export($query2->post,true);
                
@@ -773,3 +792,9 @@ function wpimprov_display_t_internal( $post_id,$future=true ){
 }
 
 }
+
+
+add_image_size( "w_100",100);
+add_image_size( "w_300",300);
+add_image_size( "w_800",800);
+add_image_size( "w_1200",100);
