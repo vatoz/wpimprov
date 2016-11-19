@@ -144,6 +144,9 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-event-start-time', __("Start time", 'wpimprov'), 'datetime-local');
             $Result[] = new wpimprov_field('wpimprov-event-end-time', __("End time", 'wpimprov'), 'datetime-local');
             $Result[] = new wpimprov_field('wpimprov-event-venue', __("Venue", 'wpimprov'), 'text');
+            $Result[] = new wpimprov_field('wpimprov-event-venue-city', __("Venue city", 'wpimprov'), 'text');
+            $Result[] = new wpimprov_field('wpimprov-event-venue-street', __("Venue street", 'wpimprov'), 'text');
+            
             $Result[] = new wpimprov_field('wpimprov-event-ticket-uri', __("Tickets", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-event-geo-latitude', __("Latitude", 'wpimprov'), 'number');
             $Result[] = new wpimprov_field('wpimprov-event-geo-longitude', __("Longitude", 'wpimprov'), 'number');
@@ -641,9 +644,9 @@ function wpimprov_display_func( $atts ){
                
                 
                 $meta=get_post_meta($query2->post->ID, '', true);
-                echo  $meta['wpimprov-event-start-time'][0].'<br>';
+                echo  substr($meta['wpimprov-event-start-time'][0],11,5).'<br>';
                 
-                echo  $meta['wpimprov-event-venue'][0].'<br>';
+                echo  $meta['wpimprov-event-venue-city'][0].', '.$meta['wpimprov-event-venue'][0].'<br>';
                 echo  '</div>';
                 $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
@@ -660,7 +663,7 @@ function wpimprov_display_func( $atts ){
 	for($j=0;$j<7;$j++){
             $result.=  "<div class='wpimprov_day'>";		
             $result.= "<h2 >";
-            $result.=$date->format('D d.m.') ;
+            $result.=$date->format('d.m.') ;
             $result.= "</h2>\n";
             //$result.=calendar_from_fb_date($date->format('Y-m-d'),$atts["list"]);
             if(isset($posts_ar[$date->format('Y-m-d')]) ){
@@ -681,10 +684,14 @@ function wpimprov_display_func( $atts ){
   .wpimprov_day {
         width: 14%; display:block;float:left;
     }
-  .wpimprov_week {clear:both}              
+  .wpimprov_week {clear:both} 
+      
+       .wpimprov_large_calendar {
+    font-size:12px;   
+   }
   .wpimprov_large_calendar h2{
-    font-size:22px;   
-   }              
+    font-size:16px;   
+   } 
 }</style>
                 
 style;
@@ -783,7 +790,7 @@ function wpimprov_display_t_internal( $post_id,$future=true ){
                 $meta=get_post_meta($query2->post->ID, '', true);
                 $result.= $meta['wpimprov-event-start-time'][0].'<br>';
                 
-                $result.= $meta['wpimprov-event-venue'][0].'<br>';
+                $result.= $meta['wpimprov-event-venue'][0].','.$meta['wpimprov-event-venue-city'][0].'<br>';
                 $result.= '</div>';
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}

@@ -87,7 +87,9 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
         $tmp2=(array)$tmp2['place'];
         
         $tmp3=(array)$tmp2['location'];
-        $data['location']= $tmp2['name'].", ".$tmp3['street'] .", ".$tmp3['city'];
+        $data['venue']= $tmp2['name'];
+        $data["street"]=$tmp3['street'];
+        $data["city"]=$tmp3['city'];
         $data['latitude']=$tmp3['latitude'];
         $data['longitude']=$tmp3['longitude'];
  
@@ -108,7 +110,9 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
                          'wpimprov-event-start-time'=>$this->fb_date_2_local_date($data['start_time']),
                          'wpimprov-event-end-time'=>$this->fb_date_2_local_date($data['end_time']),      
                          'wpimprov-event-fb'=>$data['id'],
-                         'wpimprov-event-venue'=>$data['location'],
+                         'wpimprov-event-venue'=>$data['venue'],
+                        'wpimprov-event-venue-street'=>$data['street'],
+                        'wpimprov-event-venue-city'=>$data['city'],
                          'wpimprov-event-ticket-uri'=>$data['ticket_uri'],
                          'wpimprov-event-geo-latitude'=>$data['latitude'],
                          'wpimprov-event-geo-longitude'=>$data['longitude'],
