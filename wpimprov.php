@@ -214,6 +214,10 @@ function wpimprov_hook_schedule() {
 
 function wpimprov_cron() {
     wpimprov_load_facebook(5, false);
+
+    global $wpdb;
+     $wpdb->query("update  " . $wpdb->prefix . "postmeta set meta_value='Praha' where meta_key = 'wpimprov-event-venue-city' and meta_value='Prague' ");
+    
 }
 
 /* Get wpimprov-event-fb meta values,
@@ -639,7 +643,7 @@ function wpimprov_display_func( $atts ){
                 ob_start();
 		echo '<div class="wpimprov_event">';
                 echo wpimprov_responsive_image();
-                echo  '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
+                echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
                 //$result.=var_export($query2->post,true);
                
                 
@@ -690,6 +694,10 @@ function wpimprov_display_func( $atts ){
     font-size:12px;   
    }
   .wpimprov_large_calendar h2{
+    font-size:19px;   
+   } 
+                
+  .wpimprov_large_calendar h3{
     font-size:16px;   
    } 
 }</style>
