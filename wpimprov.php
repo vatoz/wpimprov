@@ -10,6 +10,7 @@
  * Text Domain: wpimprov
  */
 require 'wpimprov_field.php';
+require "wpimprov_display.php";
 
 add_action('init', 'wpimprov_create_post_type');
 
@@ -208,7 +209,7 @@ function wpimprov_hook_schedule() {
     }
 }
 
-/* Function iscalled regullary,
+/* Function is called regullary,
  * it will load events from facebook
  */
 
@@ -466,6 +467,7 @@ function wpimprov_options_page() {
 
     <?php
     wpimprov_load_facebook(2, true);
+    echo shortcode_exists("wpimprov_calendars");
     // calendar_from_fb_cron();
     //echo __( 'In near future without tag', 'calendar_from_fb' );
     //echo calendar_from_fb_display_func(array('list'=>'null'));
@@ -596,120 +598,6 @@ function wpimprov_meta_save($post_id, $key, $new_meta_value) {
 }
 
 
-add_shortcode( 'wpimprov_calendar', 'wpimprov_display_func' );
-
-function wpimprov_display_func( $atts ){
-	$result="";
-	if(!isset($atts["list"])){
-		$atts["list"]="";
-	}
- 		
-        
-        
-	$date = new DateTime("now");
-	if ($date->format('N')>1)$date->sub(new DateInterval("P".($date->format('N')-1)."D"));
-		
-       
-        $t=term_exists($atts["list"],"wpimprov_event_type");
-        
-        $args = array(
-        'post_type' => 'wpimprov_event',
-        'tax_query' => array(
-            array(
-            'taxonomy' => 'wpimprov_event_type',
-            'field' => 'id',
-            'terms' =>  $t['term_taxonomy_id']
-             )
-        ),
-        
-	'posts_per_page'         => 50,    
-        'meta_query'=>array(
-            'key' => 'wpimprov-event-start-time',    
-            'value'=>$date->format('Y-m-d'),
-            'compare'=>'>=',
-            
-        ),    
-        'orderby'  => array( 'meta_value' => 'ASC', 'title' => 'ASC' ),
-	'meta_key' => 'wpimprov-event-start-time'    
-            
-        );
-        $query2 = new WP_Query( $args ); 
-
-        $posts_ar=array();   
-        if ( $query2->have_posts() ) {
-	// The 2nd Loop
-	while ( $query2->have_posts() ) {
-		$query2->the_post();
-                ob_start();
-		echo '<div class="wpimprov_event">';
-                echo wpimprov_responsive_image();
-                echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
-                //$result.=var_export($query2->post,true);
-               
-                
-                $meta=get_post_meta($query2->post->ID, '', true);
-                echo  substr($meta['wpimprov-event-start-time'][0],11,5).'<br>';
-                
-                echo  $meta['wpimprov-event-venue-city'][0].', '.$meta['wpimprov-event-venue'][0].'<br>';
-                echo  '</div>';
-                $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
-                //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
-	}
-        
-        
-        $result.="<div class=wpimprov_large_calendar>";
-	
-	$date = new DateTime("now");
-	if ($date->format('N')>1)$date->sub(new DateInterval("P".($date->format('N')-1)."D"));
-		
-	for($i=0;$i<5;$i++){
-	$result.="<div class='wpimprov_week '>";
-	for($j=0;$j<7;$j++){
-            $result.=  "<div class='wpimprov_day'>";		
-            $result.= "<h2 >";
-            $result.=$date->format('d.m.') ;
-            $result.= "</h2>\n";
-            //$result.=calendar_from_fb_date($date->format('Y-m-d'),$atts["list"]);
-            if(isset($posts_ar[$date->format('Y-m-d')]) ){
-                $result.=implode(" ",$posts_ar[$date->format('Y-m-d')]);
-               
-            }
-            
-            $result.= "</div>";//day
-            $date->add(new DateInterval("P1D"));	
-	}
-	$result.="</div>";//week
-	
-	}
-	 	$result.="</div>";//calendar
-        $result.=<<<style
-                <style type="text/css">
-@media (min-width: 800px) {
-  .wpimprov_day {
-        width: 14%; display:block;float:left;
-    }
-  .wpimprov_week {clear:both} 
-      
-       .wpimprov_large_calendar {
-    font-size:12px;   
-   }
-  .wpimprov_large_calendar h2{
-    font-size:19px;   
-   } 
-                
-  .wpimprov_large_calendar h3{
-    font-size:16px;   
-   } 
-}</style>
-                
-style;
-                
-         return $result;
-}
-
-}
-
-
 add_action('plugins_loaded', 'wpimprov_load_textdomain');
 function wpimprov_load_textdomain() {
 	load_plugin_textdomain( 'wpimprov', false, dirname( plugin_basename(__FILE__) )  );
@@ -733,80 +621,6 @@ function wpimprov_responsive_image(){
     return ob_get_clean();
 }
 
-
-function wpimprov_team_calendar($post_id  ){
-    
-        $future=wpimprov_display_t_internal($post_id,true);
-        $past=wpimprov_display_t_internal($post_id,false);
-        
-        
-        return '<div>'.
-                ($future?"<h1>".__('Future events', 'wpimprov')."</h1>".$future:__('No future events', 'wpimprov'))
-                
-                .
-                
-                ($past?"<h1>".__('Past events', 'wpimprov')."</h1>".$past:__('No past events', 'wpimprov'))
-                
-        .
-              "</div>"  
-                ;
-        
-}
-
-function wpimprov_display_t_internal( $post_id,$future=true ){
-		
-	$date = new DateTime("now");
-	
-        
-        $args = array(
-        'post_type' => 'wpimprov_event',
-        'tax_query' => array(
-            array(
-            'taxonomy' => 'wpimprov_event_team',
-            'field' => 'id',
-            'terms' => wpimprov_taxonomy_from_post($post_id)
-             )
-        ),
-        
-	'posts_per_page'         => 150,    
-        'meta_query'=>array(
-            'key' => 'wpimprov-event-start-time',    
-            'value'=>$date->format('Y-m-d'),
-            'compare'=>$future?'>=':'<',
-        ),    
-        'orderby'  => array( 'meta_value' => $future?'ASC':'DESC', 'title' => 'ASC' ),
-	'meta_key' => 'wpimprov-event-start-time'    
-        );
-        
-        $query2 = new WP_Query( $args ); 
-        $result="";
-           
-        if ( $query2->have_posts() ) {
-	// The 2nd Loop
-	while ( $query2->have_posts() ) {
-		$query2->the_post();
-                
-		$result.='<div class=wpimprov_event>';
-                
-                $result.=wpimprov_responsive_image();
-                
-                
-                $result.= '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
-                //$result.=var_export($query2->post,true);
-               
-                
-                $meta=get_post_meta($query2->post->ID, '', true);
-                $result.= $meta['wpimprov-event-start-time'][0].'<br>';
-                
-                $result.= $meta['wpimprov-event-venue'][0].','.$meta['wpimprov-event-venue-city'][0].'<br>';
-                $result.= '</div>';
-                //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
-	}
-        
-         return $result;
-}
-
-}
 
 
 add_image_size( "w_100",100);
