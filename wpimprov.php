@@ -605,18 +605,35 @@ function wpimprov_load_textdomain() {
 
 function wpimprov_responsive_image(){
     ob_start();
+    $tn_id = get_post_thumbnail_id( );
+
+    $img = wp_get_attachment_image_src( $tn_id, 'thumbnail' );
+    $width = $img[1];
+
+    
     echo '<img src="';
+            if($width>300){
                 the_post_thumbnail_url("w_300");
-                echo '" srcset="';  
-                the_post_thumbnail_url("w_100");
-                echo " 100w, ";        
-                the_post_thumbnail_url("w_300"); 
-                echo " 300w, ";
-                the_post_thumbnail_url("w_800");
-                echo " 800w, ";
-        
-                the_post_thumbnail_url("w_1200");
-                echo " 1200w ";
+            }else{
+                
+                the_post_thumbnail_url("full");
+            }
+            echo '" srcset="';
+             
+            the_post_thumbnail_url("full");
+            echo " ".$width."w ";
+            
+                        
+            foreach(array(100,300,800,1200) as $size){
+                    if($width>$size){
+                        echo ",";
+                            the_post_thumbnail_url("w_".$size);
+            echo " ".$size."w ";
+
+                }
+                }
+                       
+
                 echo '" class=img-responsive>';
     return ob_get_clean();
 }
@@ -626,4 +643,4 @@ function wpimprov_responsive_image(){
 add_image_size( "w_100",100);
 add_image_size( "w_300",300);
 add_image_size( "w_800",800);
-add_image_size( "w_1200",100);
+add_image_size( "w_1200",1200);
