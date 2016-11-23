@@ -120,6 +120,68 @@ style;
 return "no results";
 }
 
+function wpimprov_teams_display($atts ){
+	
+        $result="";
+ 		
+          
+        $args = array(
+        'post_type' => 'wpimprov_team',
+        
+	'posts_per_page'         => 50,  
+        'orderby'  => array( 'meta_value' => 'ASC', 'title' => 'ASC' ),
+	'meta_key' => 'wpimprov-team-city'    
+            
+        );
+        $query2 = new WP_Query( $args ); 
+
+        $posts_ar=array();   
+        if ( $query2->have_posts() ) {
+	// The 2nd Loop
+	while ( $query2->have_posts() ) {
+		$query2->the_post();
+                ob_start();
+		echo '<div class="wpimprov_team">';
+                echo wpimprov_responsive_image();
+                echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
+                //$result.=var_export($query2->post,true);
+               
+                
+                $meta=get_post_meta($query2->post->ID, '', true);
+                
+                echo  '</div>';
+                $posts_ar[$meta['wpimprov-team-city'][0]][]=  ob_get_clean();
+                //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
+	}
+        
+        
+        $result.="<div class=wpimprov_teams>";
+	
+        foreach ($posts_ar as $City=>$Teams){
+            
+        $result.="<div class=wpimprov_city>";
+	
+        $result.="<h2>".$City."</h2>";
+        foreach($Teams as $Team){
+            $result.=$Team;    
+        }
+	$result.="</div>";
+            
+            
+        }
+	
+	 	$result.="</div>";
+        $result.=<<<style
+                <style type="text/css">
+               
+}</style>
+                
+style;
+                
+         return $result;
+}
+return "no results";
+}
 
 function wpimprov_team_calendar($post_id  ){
     
@@ -192,4 +254,6 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 
 
 
-add_shortcode( 'wpimprovcalendar', 'wpimprov_calender_display' );
+add_shortcode( 'wpimprov_calendar', 'wpimprov_calender_display' );
+
+add_shortcode( 'wpimprov_teams' , 'wpimprov_teams_display' );
