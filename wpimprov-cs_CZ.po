@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-26 14:39+0000\n"
-"PO-Revision-Date: 2016-11-26 14:41+0000\n"
+"POT-Creation-Date: 2016-11-27 11:31+0000\n"
+"PO-Revision-Date: 2016-11-27 11:31+0000\n"
 "Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
@@ -14,49 +14,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: wpimprov.php:139
-msgid "Alias"
-msgstr "Přezdívka"
-
-#: wpimprov.php:148
-msgid "Venue city"
-msgstr "Město "
-
-#: wpimprov.php:149
-msgid "Venue street"
-msgstr "Ulice"
-
-#: wpimprov.php:384
-msgid "List of event ids to be imported"
-msgstr "Seznam id událostí, které mají být přidány"
-
-#: wpimprov_display.php:192
-msgid "Future events"
-msgstr "Budoucí události "
-
-#: wpimprov_display.php:192
-msgid "No future events"
-msgstr "Žádné budoucí události"
-
-#: wpimprov_display.php:194
-msgid "Past events"
-msgstr "Minulé události"
-
-#: wpimprov_display.php:194
-msgid "No past events"
-msgstr "Žádné minulé události"
-
-#. URI of the plugin
-msgid "https://github.com/vatoz/wpimprov"
-msgstr ""
-
-#. Author of the plugin
-msgid "Vaclav Cerny"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://www.facebook.com/vaclav.cerny.12"
-msgstr ""
+msgid "Performing"
+msgstr "Hrají"
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -104,6 +63,10 @@ msgstr "Webové stránky"
 msgid "City"
 msgstr "Město"
 
+#: wpimprov.php:139
+msgid "Alias"
+msgstr "Přezdívka"
+
 #: wpimprov.php:141
 msgid "Refreshed"
 msgstr "Obnoveno"
@@ -123,6 +86,14 @@ msgstr "Čas konce"
 #: wpimprov.php:147
 msgid "Venue"
 msgstr "Podnik"
+
+#: wpimprov.php:148
+msgid "Venue city"
+msgstr "Město "
+
+#: wpimprov.php:149
+msgid "Venue street"
+msgstr "Ulice"
 
 #: wpimprov.php:151
 msgid "Tickets"
@@ -154,6 +125,10 @@ msgstr ""
 "Seznam zařazovacích slov ve formátu slovo|přiřazený termín   na samostatných "
 "řádcích"
 
+#: wpimprov.php:384
+msgid "List of event ids to be imported"
+msgstr "Seznam id událostí, které mají být přidány"
+
 #: wpimprov.php:388
 msgid "Facebook App Id"
 msgstr "Facebook App Id"
@@ -166,6 +141,22 @@ msgstr "Facebook App Secret"
 msgid "Facebook token"
 msgstr "Facebook Token"
 
+#: wpimprov_display.php:217
+msgid "Future events"
+msgstr "Budoucí události "
+
+#: wpimprov_display.php:217
+msgid "No future events"
+msgstr "Žádné budoucí události"
+
+#: wpimprov_display.php:219
+msgid "Past events"
+msgstr "Minulé události"
+
+#: wpimprov_display.php:219
+msgid "No past events"
+msgstr "Žádné minulé události"
+
 #. Name of the plugin
 msgid "Improv events & teams"
 msgstr "Improvizační události a týmy"
@@ -173,3 +164,9 @@ msgstr "Improvizační události a týmy"
 #. Description of the plugin
 msgid "Will display events and teams"
 msgstr "Zobrazí události a týmy"
+
+msgid "Event time"
+msgstr "Čas události"
+
+msgid "Place"
+msgstr "Místo"
