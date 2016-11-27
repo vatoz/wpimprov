@@ -57,7 +57,8 @@ function wpimprov_calender_display( $atts ){
                
                 
                 $meta=get_post_meta($query2->post->ID, '', true);
-                echo  substr($meta['wpimprov-event-start-time'][0],11,5).'<br>';
+                echo wpimprov_date_hours($meta['wpimprov-event-start-time'][0]).'<br>';
+                
                 
                 echo  $meta['wpimprov-event-venue-city'][0].', '.$meta['wpimprov-event-venue'][0].'<br>';
                 echo  '</div>';
@@ -77,7 +78,7 @@ function wpimprov_calender_display( $atts ){
 	for($j=0;$j<7;$j++){
             $result.=  "<div class='wpimprov_day'>";		
             $result.= "<h2 >";
-            $result.=$date->format('d.m.') ;
+            $result.=trim($date->format('d.'),"0"). trim($date->format('m.'),'0') ;
             $result.= "</h2>\n";
             //$result.=calendar_from_fb_date($date->format('Y-m-d'),$atts["list"]);
             if(isset($posts_ar[$date->format('Y-m-d')]) ){
@@ -119,6 +120,29 @@ style;
 }
 return "no results";
 }
+
+function wpimprov_date_nice($date){
+    return wpimprov_date_dmy( $date)." ".wpimprov_date_hours( $date) ;
+}
+function wpimprov_date_hours($date){
+    $date=  substr($date,11,5);
+    if($date[0]==='0'){//trim trailing zero
+        $date=substr($date,1);
+    }
+    return $date;
+}
+function wpimprov_date_dmy($date){
+    $date=
+            trim(substr($date,8,2).'.','0').
+            trim(substr($date,5,2).'.','0').
+            substr($date,0,4);
+            
+            
+    
+    return $date;
+}
+
+
 
 function wpimprov_teams_display($atts ){
 	
@@ -188,13 +212,23 @@ function wpimprov_team_calendar($post_id  ){
         $future=wpimprov_team_calendar_internal($post_id,true);
         $past=wpimprov_team_calendar_internal($post_id,false);
         
-        return '<div>'.
+        $result= '<div>'.
                 ($future?"<h1>".__('Future events', 'wpimprov')."</h1>".$future:__('No future events', 'wpimprov'))
                 .
                 ($past?"<h1>".__('Past events', 'wpimprov')."</h1>".$past:__('No past events', 'wpimprov'))        
                 .
                 "</div>"  
                 ;
+          $result.=<<<style
+                <style type="text/css">
+               .wpimprov_past .wpimprov_event{
+               height:10em;float:left;width:49.99%;
+                  overflow:hidden;
+   }
+}</style>
+                
+style;
+          return $result;
 }
 
 function wpimprov_team_calendar_internal( $post_id,$future=true ){
@@ -223,7 +257,7 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
         );
         
         $query2 = new WP_Query( $args ); 
-        $result="";
+        $result="<div class=wpimprov_".($future?'future':'past').">";
            
         if ( $query2->have_posts() ) {
 	// The 2nd Loop
@@ -231,22 +265,29 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 		$query2->the_post();
                 
 		$result.='<div class=wpimprov_event>';
-                
-                $result.=wpimprov_responsive_image();
-                
+                if($future){        
+                    $result.=wpimprov_responsive_image();
+                }
                 
                 $result.= '<h2>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h2>' ;
                 //$result.=var_export($query2->post,true);
                
                 
                 $meta=get_post_meta($query2->post->ID, '', true);
-                $result.= $meta['wpimprov-event-start-time'][0].'<br>';
+                if($future){        
+                    $result.= wpimprov_date_nice($meta['wpimprov-event-start-time'][0]).'<br>';
                 
-                $result.= $meta['wpimprov-event-venue'][0].','.$meta['wpimprov-event-venue-city'][0].'<br>';
+                }else{
+                    
+                    $result.= wpimprov_date_dmy($meta['wpimprov-event-start-time'][0]).'<br>';
+                
+                }
+                
+                $result.= trim($meta['wpimprov-event-venue'][0].','.$meta['wpimprov-event-venue-city'][0],",").'<br>';
                 $result.= '</div>';
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}
-        
+        $result.= '</div>';
          return $result;
 }
 
