@@ -115,7 +115,8 @@ function wpimprov_calender_display( $atts ){
 }</style>
                 
 style;
-                
+        $result.="<div class=wpimprov_after_calendar style='clear:both;'></div>";        
+        
          return $result;
 }
 return "no results";
