@@ -93,28 +93,7 @@ function wpimprov_calender_display( $atts ){
 	
 	}
 	 	$result.="</div>";//calendar
-        $result.=<<<style
-                <style type="text/css">
-@media (min-width: 800px) {
-  .wpimprov_day {
-        width: 14%; display:block;float:left;
-    }
-  .wpimprov_week {clear:both} 
-      
-       .wpimprov_large_calendar {
-    font-size:12px;   
-   }
-  .wpimprov_large_calendar h2{
-    font-size:19px;   
-   } 
-                
-  .wpimprov_large_calendar h3{
-    font-size:16px;   
-   }
-                
-}</style>
-                
-style;
+       
         $result.="<div class=wpimprov_after_calendar style='clear:both;'></div>";        
         
          return $result;
