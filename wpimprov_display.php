@@ -146,10 +146,10 @@ function wpimprov_teams_display($atts ){
 		$query2->the_post();
                 ob_start();
 		echo '<div class="wpimprov_team">';
-                echo wpimprov_responsive_image();
+
                 echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
-                //$result.=var_export($query2->post,true);
-               
+                echo wpimprov_responsive_image();
+                //$result.=var_export($query2->post,true);               
                 
                 $meta=get_post_meta($query2->post->ID, '', true);
                 
@@ -159,17 +159,17 @@ function wpimprov_teams_display($atts ){
 	}
         
         
-        $result.="<div class=wpimprov_teams>";
+        $result.="<div class='wpimprov_teams '>";
 	
         foreach ($posts_ar as $City=>$Teams){
             
-        $result.="<div class=wpimprov_city>";
+        $result.="<div class='wpimprov_city row'>";
 	
-        $result.="<h2>".$City."</h2>";
+        $result.="<h2 class='city_name'>".$City."</h2>";
         foreach($Teams as $Team){
-            $result.=$Team;    
+            $result.=$Team."\n";    
         }
-	$result.="</div>";
+	$result.="</div>\n";
             
             
         }
