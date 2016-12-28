@@ -467,8 +467,7 @@ function wpimprov_options_page() {
 
     <?php
     wpimprov_load_facebook(2, true);
-    echo shortcode_exists("wpimprov_calendars");
-    // calendar_from_fb_cron();
+	    // calendar_from_fb_cron();
     //echo __( 'In near future without tag', 'calendar_from_fb' );
     //echo calendar_from_fb_display_func(array('list'=>'null'));
 }

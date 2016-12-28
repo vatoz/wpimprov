@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-27 11:31+0000\n"
+"POT-Creation-Date: 2016-12-16 18:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -13,6 +13,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
+
+#: wpimprov_display.php:196
+msgid "Future events"
+msgstr ""
+
+#: wpimprov_display.php:196
+msgid "No future events"
+msgstr ""
+
+#: wpimprov_display.php:198
+msgid "Past events"
+msgstr ""
+
+#: wpimprov_display.php:198
+msgid "No past events"
+msgstr ""
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -136,35 +152,10 @@ msgstr ""
 msgid "Facebook token"
 msgstr ""
 
-#: wpimprov_display.php:217
-msgid "Future events"
-msgstr ""
-
-#: wpimprov_display.php:217
-msgid "No future events"
-msgstr ""
-
-#: wpimprov_display.php:219
-msgid "Past events"
-msgstr ""
-
-#: wpimprov_display.php:219
-msgid "No past events"
-msgstr ""
-
 #. Name of the plugin
 msgid "Improv events & teams"
 msgstr ""
 
 #. Description of the plugin
 msgid "Will display events and teams"
-msgstr ""
-
-msgid "Event time"
-msgstr ""
-
-msgid "Place"
-msgstr ""
-
-msgid "Performing"
 msgstr ""

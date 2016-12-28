@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-27 11:31+0000\n"
-"PO-Revision-Date: 2016-11-27 11:31+0000\n"
-"Last-Translator: vatoz <vatoz@seznam.cz>\n"
+"POT-Creation-Date: 2016-12-16 18:35+0000\n"
+"PO-Revision-Date: 2016-12-16 18:36+0000\n"
+"Last-Translator: Václav <vaclav.vatoz.cerny@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
 "Plural-Forms: nplurals=3; plural=( n == 1 ) ? 0 : ( n >= 2 && n <= 4 ) ? 1 : "
@@ -14,8 +14,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-msgid "Performing"
-msgstr "Hrají"
+#: wpimprov_display.php:196
+msgid "Future events"
+msgstr "Budoucí události "
+
+#: wpimprov_display.php:196
+msgid "No future events"
+msgstr "Žádné budoucí události"
+
+#: wpimprov_display.php:198
+msgid "Past events"
+msgstr "Minulé události"
+
+#: wpimprov_display.php:198
+msgid "No past events"
+msgstr "Žádné minulé události"
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -141,22 +154,6 @@ msgstr "Facebook App Secret"
 msgid "Facebook token"
 msgstr "Facebook Token"
 
-#: wpimprov_display.php:217
-msgid "Future events"
-msgstr "Budoucí události "
-
-#: wpimprov_display.php:217
-msgid "No future events"
-msgstr "Žádné budoucí události"
-
-#: wpimprov_display.php:219
-msgid "Past events"
-msgstr "Minulé události"
-
-#: wpimprov_display.php:219
-msgid "No past events"
-msgstr "Žádné minulé události"
-
 #. Name of the plugin
 msgid "Improv events & teams"
 msgstr "Improvizační události a týmy"
@@ -164,9 +161,3 @@ msgstr "Improvizační události a týmy"
 #. Description of the plugin
 msgid "Will display events and teams"
 msgstr "Zobrazí události a týmy"
-
-msgid "Event time"
-msgstr "Čas události"
-
-msgid "Place"
-msgstr "Místo"
