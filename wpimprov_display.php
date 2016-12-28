@@ -77,9 +77,10 @@ function wpimprov_calender_display( $atts ){
 	$result.="<div class='wpimprov_week '>";
 	for($j=0;$j<7;$j++){
             $result.=  "<div class='wpimprov_day'>";		
-            $result.= "<h2 >";
+            $result.= "<h3>";
+            $result.="<span class=dow>".date_i18n ("l", $date->getTimestamp())." </span>" ;
             $result.=trim($date->format('d.'),"0"). trim($date->format('m.'),'0') ;
-            $result.= "</h2>\n";
+            $result.= "</h3>\n";
             //$result.=calendar_from_fb_date($date->format('Y-m-d'),$atts["list"]);
             if(isset($posts_ar[$date->format('Y-m-d')]) ){
                 $result.=implode(" ",$posts_ar[$date->format('Y-m-d')]);
