@@ -12,6 +12,7 @@ function wpimprov_calender_display( $atts ){
 	if(!isset($atts["list"])){
 		$atts["list"]="";
 	}
+        
  		
           
 	$date = new DateTime("now");
@@ -31,7 +32,7 @@ function wpimprov_calender_display( $atts ){
              )
         ),
         
-	'posts_per_page'         => 50,    
+	'posts_per_page'         => 100,    
         'meta_query'=>array(
             'key' => 'wpimprov-event-start-time',    
             'value'=>$date->format('Y-m-d'),
@@ -66,16 +67,21 @@ function wpimprov_calender_display( $atts ){
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}
         
-        
-        $result.="<div class=wpimprov_large_calendar>";
-	
+        if(!isset($atts["hideempty"])){
+             $result.='<div class="wpimprov_large_calendar wpimprov_calendar">';
+        }else{
+             $result.='<div class="wpimprov_hideempty_calendar wpimprov_calendar">';
+        }
+       
 	$date = new DateTime("now");
 	if ($date->format('N')>1){
             $date->sub(new DateInterval("P".($date->format('N')-1)."D"));
         }
-	for($i=0;$i<5;$i++){
+	for($i=0;$i<(isset($atts["weeks"])?intval($atts["weeks"]):5);$i++){
 	$result.="<div class='wpimprov_week '>";
 	for($j=0;$j<7;$j++){
+             if((!isset($atts["hideempty"]))||isset($posts_ar[$date->format('Y-m-d')])){
+         
             $result.=  "<div class='wpimprov_day'>";		
             $result.= "<h3>";
             $result.="<span class=dow>".date_i18n ("l", $date->getTimestamp())." </span>" ;
@@ -88,34 +94,14 @@ function wpimprov_calender_display( $atts ){
             }
             
             $result.= "</div>";//day
+            }
             $date->add(new DateInterval("P1D"));	
 	}
 	$result.="</div>";//week
 	
 	}
 	 	$result.="</div>";//calendar
-        $result.=<<<style
-                <style type="text/css">
-@media (min-width: 800px) {
-  .wpimprov_day {
-        width: 14%; display:block;float:left;
-    }
-  .wpimprov_week {clear:both} 
-      
-       .wpimprov_large_calendar {
-    font-size:12px;   
-   }
-  .wpimprov_large_calendar h2{
-    font-size:19px;   
-   } 
-                
-  .wpimprov_large_calendar h3{
-    font-size:16px;   
-   }
-                
-}</style>
-                
-style;
+        
         $result.="<div class=wpimprov_after_calendar style='clear:both;'></div>";        
         
          return $result;
@@ -197,12 +183,7 @@ function wpimprov_teams_display($atts ){
         }
 	
 	 	$result.="</div>";
-        $result.=<<<style
-                <style type="text/css">
-               
-}</style>
-                
-style;
+       
                 
          return $result;
 }
@@ -221,15 +202,7 @@ function wpimprov_team_calendar($post_id  ){
                 .
                 "</div>"  
                 ;
-          $result.=<<<style
-                <style type="text/css">
-               .wpimprov_past .wpimprov_event{
-               height:10em;float:left;width:49.99%;
-                  overflow:hidden;
-   }
-}</style>
-                
-style;
+         
           return $result;
 }
 
