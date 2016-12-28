@@ -607,7 +607,7 @@ function wpimprov_responsive_image(){
     ob_start();
     $tn_id = get_post_thumbnail_id( );
 
-    $img = wp_get_attachment_image_src( $tn_id, 'thumbnail' );
+    $img = wp_get_attachment_image_src( $tn_id, 'full' );
     $width = $img[1];
 
     
