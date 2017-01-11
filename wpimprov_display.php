@@ -195,10 +195,10 @@ function wpimprov_team_calendar($post_id  ){
         $future=wpimprov_team_calendar_internal($post_id,true);
         $past=wpimprov_team_calendar_internal($post_id,false);
         
-        $result= '<div>'.
-                ($future?"<h1>".__('Future events', 'wpimprov')."</h1>".$future:__('No future events', 'wpimprov'))
+        $result= '<div class="team_calendar">'.
+                ($future?"<h1 id=team_future >".__('Future events', 'wpimprov')."</h1>".$future:__('<span id=no_future>No future events</span>', 'wpimprov'))
                 .
-                ($past?"<h1>".__('Past events', 'wpimprov')."</h1>".$past:__('No past events', 'wpimprov'))        
+                ($past?"<h1 id=team_past>".__('Past events', 'wpimprov')."</h1>".$past:__('<span=no_past>No past events</span>', 'wpimprov'))        
                 .
                 "</div>"  
                 ;
