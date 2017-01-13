@@ -190,6 +190,83 @@ function wpimprov_teams_display($atts ){
 return "no results";
 }
 
+function wpimprov_teams_map_display($atts ){
+    ob_start();
+        $result="";
+ 		
+          
+        $args = array(
+        'post_type' => 'wpimprov_team',
+        
+	'posts_per_page'         => 90,  
+        'meta_key' => 'wpimprov-team-city'    
+            
+        );
+        $query2 = new WP_Query( $args ); 
+
+        $posts_ar=array();   
+        if ( $query2->have_posts() ) {
+echo '
+	<link rel="stylesheet" href="'.plugin_dir_url(__FILE__).'map/leaflet.css" />
+	<script src="'.plugin_dir_url(__FILE__).'map/leaflet.js"></script>
+	
+	<link rel="stylesheet" href="'.plugin_dir_url(__FILE__).'map/MarkerCluster.css" />
+	<link rel="stylesheet" href="'.plugin_dir_url(__FILE__).'map/MarkerCluster.Default.css" />
+	<script src="'.plugin_dir_url(__FILE__).'map/leaflet.markercluster-src.js"></script>
+<div id="map"></div>
+<script type="text/javascript">
+';
+
+
+            
+$results=array();
+// The 2nd Loop
+	while ( $query2->have_posts() ) {
+		$query2->the_post();
+                $row=array();
+                
+                
+                $meta=get_post_meta($query2->post->ID, '', true);
+                
+                if(isset($meta['wpimprov-team-geo-latitude'][0])){
+                    $row[0]=$meta['wpimprov-team-geo-latitude'][0];
+                }else{
+                    $row[0]=50;
+                }
+                
+                if(isset($meta['wpimprov-team-geo-longitude'][0])){
+                    $row[1]=$meta['wpimprov-team-geo-longitude'][0];
+                }else{
+                    $row[1]=15;
+                }
+                
+                $row[2]=get_the_title( $query2->post->ID );
+                ob_start();
+                the_post_thumbnail_url("w_100");
+                $row[3]=  ob_get_clean();
+                $row[4]=get_post_permalink($query2->post->ID);
+		
+                
+                $results[]=$row;
+                
+            }
+        
+        
+        echo "var teams=".  json_encode($results).";";
+	
+        
+        echo '
+	</script>
+        <script src="'.plugin_dir_url(__FILE__).'map/display.js"></script>
+	';
+	
+	 return ob_get_clean();
+       
+            
+}
+return "no results";
+}
+
 function wpimprov_team_calendar($post_id  ){
     
         $future=wpimprov_team_calendar_internal($post_id,true);
@@ -273,3 +350,5 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 add_shortcode( 'wpimprov_calendar', 'wpimprov_calender_display' );
 
 add_shortcode( 'wpimprov_teams' , 'wpimprov_teams_display' );
+
+add_shortcode( 'wpimprov_teams_map' , 'wpimprov_teams_map_display' );

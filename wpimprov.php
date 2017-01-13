@@ -139,6 +139,9 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-team-alias', __("Alias", 'wpimprov'), 'text');
             
             $Result[] = new wpimprov_field('wpimprov-team-refreshed', __("Refreshed", 'wpimprov'), 'date');
+            $Result[] = new wpimprov_field('wpimprov-team-geo-latitude', __("Latitude", 'wpimprov'), 'number');
+            $Result[] = new wpimprov_field('wpimprov-team-geo-longitude', __("Longitude", 'wpimprov'), 'number');
+            
             break;
         case "wpimprov_event":
             $Result[] = new wpimprov_field('wpimprov-event-fb', __("Facebook event id", 'wpimprov'), 'text');
