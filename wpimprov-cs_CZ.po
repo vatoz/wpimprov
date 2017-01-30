@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-16 18:35+0000\n"
-"PO-Revision-Date: 2016-12-16 18:36+0000\n"
-"Last-Translator: Václav <vaclav.vatoz.cerny@gmail.com>\n"
+"PO-Revision-Date: 2017-01-30 09:07+0000\n"
+"Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
 "Plural-Forms: nplurals=3; plural=( n == 1 ) ? 0 : ( n >= 2 && n <= 4 ) ? 1 : "
@@ -32,7 +32,7 @@ msgstr "Žádné minulé události"
 
 #: wpimprov.php:25
 msgid "Teams"
-msgstr "Týmy"
+msgstr "Skupiny"
 
 #: wpimprov.php:39
 msgid "Type of event"
@@ -40,11 +40,11 @@ msgstr "Typ události"
 
 #: wpimprov.php:53
 msgid "Improliga teams"
-msgstr "Improligové týmy"
+msgstr "Improligové skupiny"
 
 #: wpimprov.php:54
 msgid "Improliga team"
-msgstr "Improligový tým"
+msgstr "Improligový skupiny"
 
 #: wpimprov.php:73
 msgid "Improliga events"
@@ -62,7 +62,7 @@ msgstr "Detaily události"
 #. Unique ID
 #: wpimprov.php:120
 msgid "Team details"
-msgstr "Detaily týmu"
+msgstr "Detaily skupiny"
 
 #: wpimprov.php:136
 msgid "Facebook id"
@@ -156,8 +156,8 @@ msgstr "Facebook Token"
 
 #. Name of the plugin
 msgid "Improv events & teams"
-msgstr "Improvizační události a týmy"
+msgstr "Improvizační události a skupiny"
 
 #. Description of the plugin
 msgid "Will display events and teams"
-msgstr "Zobrazí události a týmy"
+msgstr "Zobrazí události a skupiny"
