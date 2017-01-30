@@ -217,7 +217,7 @@ function wpimprov_hook_schedule() {
  */
 
 function wpimprov_cron() {
-    wpimprov_load_facebook(5, false);
+    wpimprov_load_facebook(3, false);
 
     global $wpdb;
      $wpdb->query("update  " . $wpdb->prefix . "postmeta set meta_value='Praha' where meta_key = 'wpimprov-event-venue-city' and meta_value='Prague' ");
