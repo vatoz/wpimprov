@@ -345,6 +345,103 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 
 }
 
+function wpimprov_list_display( $atts ){
+	
+        $result="<textarea rows=15 cols=150>";
+	if(!isset($atts["list"])){
+		$atts["list"]="";
+	}
+        
+ 		
+          
+	$date = new DateTime("now");
+	if ($date->format('N')>1){
+            $date->sub(new DateInterval("P".($date->format('N')-1)."D"));
+        }	
+       
+        $t=term_exists($atts["list"],"wpimprov_event_type");
+        
+        $args = array(
+        'post_type' => 'wpimprov_event',
+        'tax_query' => array(
+            array(
+            'taxonomy' => 'wpimprov_event_type',
+            'field' => 'id',
+            'terms' =>  $t['term_taxonomy_id']
+             )
+        ),
+        
+	'posts_per_page'         => 100,    
+        'meta_query'=>array(
+            'key' => 'wpimprov-event-start-time',    
+            'value'=>$date->format('Y-m-d'),
+            'compare'=>'>=',
+            
+        ),    
+        'orderby'  => array( 'meta_value' => 'ASC', 'title' => 'ASC' ),
+	'meta_key' => 'wpimprov-event-start-time'    
+            
+        );
+        $query2 = new WP_Query( $args ); 
+
+        $posts_ar=array();   
+        if ( $query2->have_posts() ) {
+	// The 2nd Loop
+	while ( $query2->have_posts() ) {
+		$query2->the_post();
+                ob_start();
+                $meta=get_post_meta($query2->post->ID, '', true);
+                
+                echo  '* @'. $meta['wpimprov-event-source'][0].' ('.get_the_title( $query2->post->ID ).') - ';
+                
+                echo  $meta['wpimprov-event-venue-city'][0].', '.$meta['wpimprov-event-venue'][0];
+                
+       
+                echo' - ' ;
+                //$result.=var_export($query2->post,true);
+               
+                
+                echo wpimprov_date_hours($meta['wpimprov-event-start-time'][0]);
+                
+                
+                echo  "\n";
+                $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
+                //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
+	}
+        
+       
+	$date = new DateTime("now");
+	if ($date->format('N')>1){
+            $date->sub(new DateInterval("P".($date->format('N')-1)."D"));
+        }
+	for($i=0;$i<(isset($atts["weeks"])?intval($atts["weeks"]):5);$i++){
+	$result.="\n";
+	for($j=0;$j<7;$j++){
+             if((!isset($atts["hideempty"]))||isset($posts_ar[$date->format('Y-m-d')])){
+         
+            $result.=date_i18n ("l", $date->getTimestamp())." " ;
+            $result.=trim($date->format('d.'),"0"). trim($date->format('m.'),'0')."\n" ;
+            if(isset($posts_ar[$date->format('Y-m-d')]) ){
+                $result.=implode("\n ",$posts_ar[$date->format('Y-m-d')]);
+               
+            }
+            }
+            $date->add(new DateInterval("P1D"));	
+	$result.="\n";//week
+	
+            
+            }
+	$result.="\n";//week
+	
+	}
+	 	
+        $result.="</textarea>";        
+        
+         return $result;
+}
+return "no results";
+}
+
 
 
 add_shortcode( 'wpimprov_calendar', 'wpimprov_calender_display' );

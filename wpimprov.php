@@ -356,7 +356,12 @@ if (is_admin()) {
 }
 
 function wpimprov_add_admin_menu() {
-    add_menu_page('wpimprov', 'wpimprov', 'manage_options', 'wpimprov', 'wpimprov_options_page');
+    add_menu_page(__('wpimprov settings', 'wpimprov'), __('wpimprov settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
+    add_menu_page(__('wpimprov load data', 'wpimprov'), __('wpimprov load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
+    add_menu_page(__('wpimprov weekly list format', 'wpimprov'), __('wpimprov weekly list format', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
+    add_menu_page(__('wpimprov other sources ', 'wpimprov'), __('wpimprov other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', 'wpimprov_sources_page');
+
+    
 }
 
 function wpimprov_settings_init() {
@@ -371,15 +376,7 @@ function wpimprov_settings_init() {
     add_settings_section(
             'wpimprov_pluginPage_section_fb', __('Facebook settings', 'wpimprov'), 'wpimprov_settings_section_callback', 'pluginPage'
     );
-    /*
-      add_settings_field(
-      'wpimprov_textarea_sources',
-      __( 'List of sources with legend in form source|description on new lines', 'wpimprov' ),
-      'wpimprov_textarea_field_sources_render',
-      'pluginPage',
-      'wpimprov_pluginPage_section_main'
-      );
-     */
+    
     add_settings_field(
             'wpimprov_textarea_tagging', __('List of tag selectors in form string|tag on new lines', 'wpimprov'), 'wpimprov_textarea_field_tagging_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
     );
@@ -452,6 +449,29 @@ function wpimprov_settings_section_callback() {
     //echo __( 'Automatic assigning of tags', 'wpimprov' );
 }
 
+function wpimprov_list_page() {
+    echo wpimprov_list_display(array('list'=>'show'));
+    
+    
+}
+function wpimprov_sources_page() {
+    global $wpdb;
+    echo "<table>\n";
+    $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old "
+            . " FROM " . $wpdb->prefix . "wpimpro_sources  where refreshed<date(now()) order by source  " , ARRAY_A);
+
+    foreach ($zdroje as $Zdroj) {
+       echo "<tr>\n";
+       echo "<td>\n";
+    
+        echo $Zdroj["source"]."</td><td>".$Zdroj["description"]."</td><td>". $Zdroj["refreshed"]."</td></tr>";
+    }
+    echo "</table>";
+    
+    
+    
+}
+
 function wpimprov_options_page() {
     ?>
     <form action='options.php' method='post'>
@@ -466,13 +486,14 @@ function wpimprov_options_page() {
 
     </form>     <br>
 
-
-
     <?php
+
+
+}
+
+
+function wpimprov_load_page() {
     wpimprov_load_facebook(2, true);
-	    // calendar_from_fb_cron();
-    //echo __( 'In near future without tag', 'calendar_from_fb' );
-    //echo calendar_from_fb_display_func(array('list'=>'null'));
 }
 
 /* Create table for sources
