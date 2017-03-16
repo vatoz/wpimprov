@@ -422,7 +422,7 @@ function wpimprov_list_display( $atts ){
             $result.=date_i18n ("l", $date->getTimestamp())." " ;
             $result.=trim($date->format('d.'),"0"). trim($date->format('m.'),'0')."\n" ;
             if(isset($posts_ar[$date->format('Y-m-d')]) ){
-                $result.=implode("\n ",$posts_ar[$date->format('Y-m-d')]);
+                $result.=implode(" ",$posts_ar[$date->format('Y-m-d')]);
                
             }
             }
