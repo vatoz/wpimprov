@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-16 18:35+0000\n"
+"POT-Creation-Date: 2017-03-22 14:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -13,22 +13,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
-
-#: wpimprov_display.php:196
-msgid "Future events"
-msgstr ""
-
-#: wpimprov_display.php:196
-msgid "No future events"
-msgstr ""
-
-#: wpimprov_display.php:198
-msgid "Past events"
-msgstr ""
-
-#: wpimprov_display.php:198
-msgid "No past events"
-msgstr ""
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -84,51 +68,75 @@ msgstr ""
 msgid "Refreshed"
 msgstr ""
 
-#: wpimprov.php:144
-msgid "Facebook event id"
-msgstr ""
-
-#: wpimprov.php:145
-msgid "Start time"
-msgstr ""
-
-#: wpimprov.php:146
-msgid "End time"
-msgstr ""
-
-#: wpimprov.php:147
-msgid "Venue"
-msgstr ""
-
-#: wpimprov.php:148
-msgid "Venue city"
-msgstr ""
-
-#: wpimprov.php:149
-msgid "Venue street"
-msgstr ""
-
-#: wpimprov.php:151
-msgid "Tickets"
-msgstr ""
-
-#: wpimprov.php:152
+#: wpimprov.php:142 wpimprov.php:155
 msgid "Latitude"
 msgstr ""
 
-#: wpimprov.php:153
+#: wpimprov.php:143 wpimprov.php:156
 msgid "Longitude"
 msgstr ""
 
+#: wpimprov.php:147
+msgid "Facebook event id"
+msgstr ""
+
+#: wpimprov.php:148
+msgid "Start time"
+msgstr ""
+
+#: wpimprov.php:149
+msgid "End time"
+msgstr ""
+
+#: wpimprov.php:150
+msgid "Venue"
+msgstr ""
+
+#: wpimprov.php:151
+msgid "Venue city"
+msgstr ""
+
+#: wpimprov.php:152
+msgid "Venue street"
+msgstr ""
+
 #: wpimprov.php:154
+msgid "Tickets"
+msgstr ""
+
+#: wpimprov.php:157
 msgid "Source"
 msgstr ""
 
-#: wpimprov.php:364
+#: wpimprov.php:359
+msgid "Weekly lists"
+msgstr ""
+
+#: wpimprov.php:359
+msgid "Wpimprov"
+msgstr ""
+
+#: wpimprov.php:360
+msgid "Other sources "
+msgstr ""
+
+#: wpimprov.php:360
+msgid "Other sources"
+msgstr ""
+
+#: wpimprov.php:361 wpimprov.php:361
+msgid "Settings"
+msgstr ""
+
+#: wpimprov.php:362 wpimprov.php:362
+msgid "Load data"
+msgstr ""
+
+#: wpimprov.php:372
 msgid "Main settings"
 msgstr ""
 
-#: wpimprov.php:369
+#: wpimprov.php:377
 msgid "Facebook settings"
 msgstr ""
 
@@ -150,6 +158,22 @@ msgstr ""
 
 #: wpimprov.php:395
 msgid "Facebook token"
+msgstr ""
+
+#: wpimprov_display.php:276
+msgid "Future events"
+msgstr ""
+
+#: wpimprov_display.php:276
+msgid "No future events"
+msgstr ""
+
+#: wpimprov_display.php:278
+msgid "Past events"
+msgstr ""
+
+#: wpimprov_display.php:278
+msgid "No past events"
 msgstr ""
 
 #. Name of the plugin

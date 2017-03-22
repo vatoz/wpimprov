@@ -347,7 +347,7 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 
 function wpimprov_list_display( $atts ){
 	
-        $result="<textarea rows=15 cols=150>";
+        $result="<textarea rows=30 cols=150>";
 	if(!isset($atts["list"])){
 		$atts["list"]="";
 	}

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-16 18:35+0000\n"
-"PO-Revision-Date: 2017-01-30 09:07+0000\n"
+"POT-Creation-Date: 2017-03-22 14:32+0000\n"
+"PO-Revision-Date: 2017-03-22 14:33+0000\n"
 "Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
@@ -14,21 +14,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: wpimprov_display.php:196
-msgid "Future events"
-msgstr "Budoucí události "
+#: wpimprov.php:359
+msgid "Weekly lists"
+msgstr "Týdenní výpisy"
 
-#: wpimprov_display.php:196
-msgid "No future events"
-msgstr "Žádné budoucí události"
+#: wpimprov.php:359
+msgid "Wpimprov"
+msgstr "Wpimprov"
 
-#: wpimprov_display.php:198
-msgid "Past events"
-msgstr "Minulé události"
+#: wpimprov.php:360
+msgid "Other sources "
+msgstr "Další zdroje"
 
-#: wpimprov_display.php:198
-msgid "No past events"
-msgstr "Žádné minulé události"
+#: wpimprov.php:360
+msgid "Other sources"
+msgstr "Další zdroje"
+
+#: wpimprov.php:361 wpimprov.php:361
+msgid "Settings"
+msgstr "Nastavení"
+
+#: wpimprov.php:362 wpimprov.php:362
+msgid "Load data"
+msgstr "Nahrát údaje"
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -84,51 +92,51 @@ msgstr "Přezdívka"
 msgid "Refreshed"
 msgstr "Obnoveno"
 
-#: wpimprov.php:144
-msgid "Facebook event id"
-msgstr "Facebookové id události"
-
-#: wpimprov.php:145
-msgid "Start time"
-msgstr "Čas začátku"
-
-#: wpimprov.php:146
-msgid "End time"
-msgstr "Čas konce"
-
-#: wpimprov.php:147
-msgid "Venue"
-msgstr "Podnik"
-
-#: wpimprov.php:148
-msgid "Venue city"
-msgstr "Město "
-
-#: wpimprov.php:149
-msgid "Venue street"
-msgstr "Ulice"
-
-#: wpimprov.php:151
-msgid "Tickets"
-msgstr "Vstupenky"
-
-#: wpimprov.php:152
+#: wpimprov.php:142 wpimprov.php:155
 msgid "Latitude"
 msgstr "Zeměpisná šířka"
 
-#: wpimprov.php:153
+#: wpimprov.php:143 wpimprov.php:156
 msgid "Longitude"
 msgstr "Zeměpisná délka"
 
+#: wpimprov.php:147
+msgid "Facebook event id"
+msgstr "Facebookové id události"
+
+#: wpimprov.php:148
+msgid "Start time"
+msgstr "Čas začátku"
+
+#: wpimprov.php:149
+msgid "End time"
+msgstr "Čas konce"
+
+#: wpimprov.php:150
+msgid "Venue"
+msgstr "Podnik"
+
+#: wpimprov.php:151
+msgid "Venue city"
+msgstr "Město "
+
+#: wpimprov.php:152
+msgid "Venue street"
+msgstr "Ulice"
+
 #: wpimprov.php:154
+msgid "Tickets"
+msgstr "Vstupenky"
+
+#: wpimprov.php:157
 msgid "Source"
 msgstr "Zdroj"
 
-#: wpimprov.php:364
+#: wpimprov.php:372
 msgid "Main settings"
 msgstr "Hlavní nastavení"
 
-#: wpimprov.php:369
+#: wpimprov.php:377
 msgid "Facebook settings"
 msgstr "Nastavení Facebooku"
 
@@ -153,6 +161,22 @@ msgstr "Facebook App Secret"
 #: wpimprov.php:395
 msgid "Facebook token"
 msgstr "Facebook Token"
+
+#: wpimprov_display.php:276
+msgid "Future events"
+msgstr "Budoucí události "
+
+#: wpimprov_display.php:276
+msgid "No future events"
+msgstr "Žádné budoucí události"
+
+#: wpimprov_display.php:278
+msgid "Past events"
+msgstr "Minulé události"
+
+#: wpimprov_display.php:278
+msgid "No past events"
+msgstr "Žádné minulé události"
 
 #. Name of the plugin
 msgid "Improv events & teams"

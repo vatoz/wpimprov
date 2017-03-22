@@ -356,11 +356,11 @@ if (is_admin()) {
 }
 
 function wpimprov_add_admin_menu() {
-    add_menu_page(__('wpimprov settings', 'wpimprov'), __('wpimprov settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
-    add_menu_page(__('wpimprov load data', 'wpimprov'), __('wpimprov load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
-    add_menu_page(__('wpimprov weekly list format', 'wpimprov'), __('wpimprov weekly list format', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
-    add_menu_page(__('wpimprov other sources ', 'wpimprov'), __('wpimprov other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', 'wpimprov_sources_page');
-
+    add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', 'wpimprov_sources_page');
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
+   
     
 }
 
