@@ -242,13 +242,13 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
         echo $Source . "<br>";
     flush();
 
-    $tmp = $fa->getEvents($Source, $Refreshed);
+    $tmp = $fa->getEvents($Source, wpimprov_date_mod($Refreshed));
 
 
     if ($Verbose)
         var_export($tmp);
 
-    $tmp2 = $fa->getPostsEvents($Source, $Refreshed);
+    $tmp2 = $fa->getPostsEvents($Source, wpimprov_date_mod($Refreshed));
     if ($Verbose)
         var_export($tmp2);
     $events = array_merge($tmp, $tmp2);
@@ -449,6 +449,15 @@ function wpimprov_settings_section_callback() {
     //echo __( 'Automatic assigning of tags', 'wpimprov' );
 }
 
+function wpimprov_date_mod($D){
+        $date = new DateTime($D);
+        $inte=new DateInterval("P10D");
+        $inte->invert =1;
+        $date->add($inte);
+        return   $date->format('Y-m-d');
+}
+
+
 function wpimprov_list_page() {
     echo wpimprov_list_display(array('list'=>'show'));
     
@@ -464,7 +473,7 @@ function wpimprov_sources_page() {
        echo "<tr>\n";
        echo "<td>\n";
     
-        echo $Zdroj["source"]."</td><td>".$Zdroj["description"]."</td><td>". $Zdroj["refreshed"]."</td></tr>";
+        echo htmlentities( $Zdroj["source"])."</td><td>".htmlentities($Zdroj["description"])."</td><td>". htmlentities($Zdroj["refreshed"])."</td></tr>";
     }
     echo "</table>";
     
