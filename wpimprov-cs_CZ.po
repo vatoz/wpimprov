@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-08 07:50+0000\n"
-"PO-Revision-Date: 2017-06-08 07:50+0000\n"
+"POT-Creation-Date: 2017-06-08 10:17+0000\n"
+"PO-Revision-Date: 2017-06-08 10:17+0000\n"
 "Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
@@ -14,13 +14,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: wpimprov_display.php:452
-msgid "Performing"
-msgstr "Vystupuje"
-
-#: wpimprov_display.php:454
-msgid "Place"
-msgstr "Místo"
+#: wpimprov_display.php:456
+msgid "Event time"
+msgstr "Čas události"
 
 #: wpimprov.php:25
 msgid "Teams"
@@ -181,6 +177,14 @@ msgstr "Minulé události"
 #: wpimprov_display.php:277
 msgid "No past events"
 msgstr "Žádné minulé události"
+
+#: wpimprov_display.php:452
+msgid "Performing"
+msgstr "Vystupuje"
+
+#: wpimprov_display.php:454
+msgid "Place"
+msgstr "Místo"
 
 #. Name of the plugin
 msgid "Improv events & teams"

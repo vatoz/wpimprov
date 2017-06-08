@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-08 07:49+0000\n"
+"POT-Creation-Date: 2017-06-08 10:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -178,6 +178,10 @@ msgstr ""
 
 #: wpimprov_display.php:454
 msgid "Place"
+msgstr ""
+
+#: wpimprov_display.php:456
+msgid "Event time"
 msgstr ""
 
 #. Name of the plugin

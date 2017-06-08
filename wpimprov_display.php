@@ -452,7 +452,8 @@ function wpimprov_strings(){
     $a=array( __('Performing','wpimprov'),
         __('Tickets','wpimprov'),
         __('Place','wpimprov'),
-         __('End time','wpimprov')
+         __('End time','wpimprov'),
+        __('Event time','wpimprov'),
         
         
         );
