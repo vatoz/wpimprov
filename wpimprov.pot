@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-22 14:32+0000\n"
+"POT-Creation-Date: 2017-06-08 07:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -84,7 +84,7 @@ msgstr ""
 msgid "Start time"
 msgstr ""
 
-#: wpimprov.php:149
+#: wpimprov.php:149 wpimprov_display.php:455
 msgid "End time"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr ""
 msgid "Venue street"
 msgstr ""
 
-#: wpimprov.php:154
+#: wpimprov.php:154 wpimprov_display.php:453
 msgid "Tickets"
 msgstr ""
 
@@ -116,11 +116,7 @@ msgstr ""
 msgid "Wpimprov"
 msgstr ""
 
-#: wpimprov.php:360
-msgid "Other sources "
-msgstr ""
-
-#: wpimprov.php:360
+#: wpimprov.php:360 wpimprov.php:360
 msgid "Other sources"
 msgstr ""
 
@@ -160,20 +156,28 @@ msgstr ""
 msgid "Facebook token"
 msgstr ""
 
-#: wpimprov_display.php:276
+#: wpimprov_display.php:275
 msgid "Future events"
 msgstr ""
 
-#: wpimprov_display.php:276
+#: wpimprov_display.php:275
 msgid "No future events"
 msgstr ""
 
-#: wpimprov_display.php:278
+#: wpimprov_display.php:277
 msgid "Past events"
 msgstr ""
 
-#: wpimprov_display.php:278
+#: wpimprov_display.php:277
 msgid "No past events"
+msgstr ""
+
+#: wpimprov_display.php:452
+msgid "Performing"
+msgstr ""
+
+#: wpimprov_display.php:454
+msgid "Place"
 msgstr ""
 
 #. Name of the plugin

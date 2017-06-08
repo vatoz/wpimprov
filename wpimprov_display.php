@@ -131,7 +131,6 @@ function wpimprov_date_dmy($date){
 }
 
 
-
 function wpimprov_teams_display($atts ){
 	
         $result="";
@@ -449,3 +448,13 @@ add_shortcode( 'wpimprov_calendar', 'wpimprov_calender_display' );
 add_shortcode( 'wpimprov_teams' , 'wpimprov_teams_display' );
 
 add_shortcode( 'wpimprov_teams_map' , 'wpimprov_teams_map_display' );
+function wpimprov_strings(){
+    $a=array( __('Performing','wpimprov'),
+        __('Tickets','wpimprov'),
+        __('Place','wpimprov'),
+         __('End time','wpimprov')
+        
+        
+        );
+    
+}
