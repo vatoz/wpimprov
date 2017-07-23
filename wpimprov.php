@@ -467,7 +467,7 @@ function wpimprov_sources_page() {
     global $wpdb;
     echo "<table>\n";
     $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old "
-            . " FROM " . $wpdb->prefix . "wpimpro_sources  where refreshed<date(now()) order by source  " , ARRAY_A);
+            . " FROM " . $wpdb->prefix . "wpimpro_sources   order by source  " , ARRAY_A);
 
     foreach ($zdroje as $Zdroj) {
        echo "<tr>\n";
