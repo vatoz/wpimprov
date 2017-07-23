@@ -11,7 +11,8 @@
  */
 require 'wpimprov_field.php';
 require "wpimprov_display.php";
-
+require "wpimprov_sources.php";
+        
 add_action('init', 'wpimprov_create_post_type');
 
 /*
@@ -357,7 +358,8 @@ if (is_admin()) {
 
 function wpimprov_add_admin_menu() {
     add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', 'wpimprov_sources_page');
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
     add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
     add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
    
@@ -463,23 +465,6 @@ function wpimprov_list_page() {
     
     
 }
-function wpimprov_sources_page() {
-    global $wpdb;
-    echo "<table>\n";
-    $zdroje = $wpdb->get_results("SELECT source,refreshed, description, DATEDIFF(now(),refreshed) as old "
-            . " FROM " . $wpdb->prefix . "wpimpro_sources   order by source  " , ARRAY_A);
-
-    foreach ($zdroje as $Zdroj) {
-       echo "<tr>\n";
-       echo "<td>\n";
-    
-        echo htmlentities( $Zdroj["source"])."</td><td>".htmlentities($Zdroj["description"])."</td><td>". htmlentities($Zdroj["refreshed"])."</td></tr>";
-    }
-    echo "</table>";
-    
-    
-    
-}
 
 function wpimprov_options_page() {
     ?>
@@ -510,7 +495,7 @@ function wpimprov_load_page() {
 
 function wpimprov_install() {
     global $wpdb;
-    $wp_improv_version = 3;
+    $wp_improv_version = 4;
     $installed = get_option("wpimprov_db_version");
     if ($installed !== $wp_improv_version) {
         $table_name = $wpdb->prefix . 'wpimpro_sources';
@@ -519,7 +504,7 @@ function wpimprov_install() {
 
         $sql = "
     CREATE TABLE `$table_name` (
-    `id` bigint(64) NOT NULL,
+    `id` bigint(64) NOT NULL AUTO_INCREMENT,
     `source` varchar(80) NOT NULL,
     `description` varchar(80) ,
     `refreshed` date  NOT NULL DEFAULT '2005-01-01',
