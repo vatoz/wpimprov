@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-08 10:17+0000\n"
-"PO-Revision-Date: 2017-06-08 10:17+0000\n"
+"POT-Creation-Date: 2017-07-23 11:51+0000\n"
+"PO-Revision-Date: 2017-07-23 11:54+0000\n"
 "Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
 "Language: cs-CZ\n"
@@ -14,151 +14,222 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: wpimprov_display.php:456
-msgid "Event time"
-msgstr "Čas události"
+#: wpimprov.php:362 wpimprov.php:362
+msgid "Add other source"
+msgstr "Přidat další zdroj"
 
-#: wpimprov.php:25
+#: wpimprov_sources.php:55 wpimprov_sources.php:307 wpimprov_sources.php:311
+msgid "Description"
+msgstr "Popis"
+
+#: wpimprov_sources.php:149
+#, php-format
+msgid "Items deleted: %d"
+msgstr "Položka smazána: %d"
+
+#: wpimprov_sources.php:155
+msgid "Sources"
+msgstr "Zdroje"
+
+#: wpimprov_sources.php:156
+msgid "Add new"
+msgstr "Přidat nový"
+
+#: wpimprov_sources.php:219
+msgid "Item was successfully saved"
+msgstr "Položka byla úspěšně uložena"
+
+#: wpimprov_sources.php:221
+msgid "There was an error while saving item"
+msgstr "Při  ukládání došlo k chybě"
+
+#: wpimprov_sources.php:226
+msgid "Item was successfully updated"
+msgstr "Položka byla úspěšně upravena"
+
+#: wpimprov_sources.php:228
+msgid "There was an error while updating item"
+msgstr "Došlo k chybě při ukládání úprav"
+
+#: wpimprov_sources.php:243
+msgid "Item not found"
+msgstr "Položka nebyla nalezena"
+
+#: wpimprov_sources.php:255
+msgid "back to list"
+msgstr "zpět na výpis"
+
+#: wpimprov_sources.php:275
+msgid "Save"
+msgstr "Uložit"
+
+#: wpimprov_sources.php:302
+msgid "Faceboook source"
+msgstr "Facebookový zdroj"
+
+#: wpimprov_sources.php:341
+msgid "Source is required"
+msgstr "Zdroj je vyžadován"
+
+#: wpimprov_sources.php:343
+msgid "Refreshed is required"
+msgstr "Pole Obnoveno je vyžadováno"
+
+#. URI of the plugin
+msgid "https://github.com/vatoz/wpimprov"
+msgstr ""
+
+#. Author of the plugin
+msgid "Vaclav Cerny"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.facebook.com/vaclav.cerny.12"
+msgstr ""
+
+#: wpimprov.php:26
 msgid "Teams"
 msgstr "Skupiny"
 
-#: wpimprov.php:39
+#: wpimprov.php:40
 msgid "Type of event"
 msgstr "Typ události"
 
-#: wpimprov.php:53
+#: wpimprov.php:54
 msgid "Improliga teams"
 msgstr "Improligové skupiny"
 
-#: wpimprov.php:54
+#: wpimprov.php:55
 msgid "Improliga team"
 msgstr "Improligový skupiny"
 
-#: wpimprov.php:73
+#: wpimprov.php:74
 msgid "Improliga events"
 msgstr "Improligové události"
 
-#: wpimprov.php:74
+#: wpimprov.php:75
 msgid "Improliga event"
 msgstr "Improligová událost"
 
 #. Unique ID
-#: wpimprov.php:111
+#: wpimprov.php:112
 msgid "Event details"
 msgstr "Detaily události"
 
 #. Unique ID
-#: wpimprov.php:120
+#: wpimprov.php:121
 msgid "Team details"
 msgstr "Detaily skupiny"
 
-#: wpimprov.php:136
+#: wpimprov.php:137
 msgid "Facebook id"
 msgstr "Facebook id"
 
-#: wpimprov.php:137
+#: wpimprov.php:138
 msgid "Webpages"
 msgstr "Webové stránky"
 
-#: wpimprov.php:138
+#: wpimprov.php:139
 msgid "City"
 msgstr "Město"
 
-#: wpimprov.php:139
+#: wpimprov.php:140
 msgid "Alias"
 msgstr "Přezdívka"
 
-#: wpimprov.php:141
+#: wpimprov.php:142 wpimprov_sources.php:54 wpimprov_sources.php:317
+#: wpimprov_sources.php:321
 msgid "Refreshed"
 msgstr "Obnoveno"
 
-#: wpimprov.php:142 wpimprov.php:155
+#: wpimprov.php:143 wpimprov.php:156
 msgid "Latitude"
 msgstr "Zeměpisná šířka"
 
-#: wpimprov.php:143 wpimprov.php:156
+#: wpimprov.php:144 wpimprov.php:157
 msgid "Longitude"
 msgstr "Zeměpisná délka"
 
-#: wpimprov.php:147
+#: wpimprov.php:148
 msgid "Facebook event id"
 msgstr "Facebookové id události"
 
-#: wpimprov.php:148
+#: wpimprov.php:149
 msgid "Start time"
 msgstr "Čas začátku"
 
-#: wpimprov.php:149 wpimprov_display.php:455
+#: wpimprov.php:150 wpimprov_display.php:455
 msgid "End time"
 msgstr "Čas konce"
 
-#: wpimprov.php:150
+#: wpimprov.php:151
 msgid "Venue"
 msgstr "Podnik"
 
-#: wpimprov.php:151
+#: wpimprov.php:152
 msgid "Venue city"
 msgstr "Město "
 
-#: wpimprov.php:152
+#: wpimprov.php:153
 msgid "Venue street"
 msgstr "Ulice"
 
-#: wpimprov.php:154 wpimprov_display.php:453
+#: wpimprov.php:155 wpimprov_display.php:453
 msgid "Tickets"
 msgstr "Vstupenky"
 
-#: wpimprov.php:157
+#: wpimprov.php:158 wpimprov_sources.php:53 wpimprov_sources.php:254
+#: wpimprov_sources.php:298
 msgid "Source"
 msgstr "Zdroj"
 
-#: wpimprov.php:359
+#: wpimprov.php:360
 msgid "Weekly lists"
 msgstr "Týdenní výpisy"
 
-#: wpimprov.php:359
+#: wpimprov.php:360
 msgid "Wpimprov"
 msgstr "Wpimprov"
 
-#: wpimprov.php:360 wpimprov.php:360
+#: wpimprov.php:361 wpimprov.php:361
 msgid "Other sources"
 msgstr "Další zdroje"
 
-#: wpimprov.php:361 wpimprov.php:361
+#: wpimprov.php:363 wpimprov.php:363
 msgid "Settings"
 msgstr "Nastavení"
 
-#: wpimprov.php:362 wpimprov.php:362
+#: wpimprov.php:364 wpimprov.php:364
 msgid "Load data"
 msgstr "Nahrát údaje"
 
-#: wpimprov.php:372
+#: wpimprov.php:374
 msgid "Main settings"
 msgstr "Hlavní nastavení"
 
-#: wpimprov.php:377
+#: wpimprov.php:379
 msgid "Facebook settings"
 msgstr "Nastavení Facebooku"
 
-#: wpimprov.php:381
+#: wpimprov.php:383
 msgid "List of tag selectors in form string|tag on new lines"
 msgstr ""
 "Seznam zařazovacích slov ve formátu slovo|přiřazený termín   na samostatných "
 "řádcích"
 
-#: wpimprov.php:384
+#: wpimprov.php:386
 msgid "List of event ids to be imported"
 msgstr "Seznam id událostí, které mají být přidány"
 
-#: wpimprov.php:388
+#: wpimprov.php:390
 msgid "Facebook App Id"
 msgstr "Facebook App Id"
 
-#: wpimprov.php:391
+#: wpimprov.php:393
 msgid "Facebook App Secret"
 msgstr "Facebook App Secret"
 
-#: wpimprov.php:395
+#: wpimprov.php:397
 msgid "Facebook token"
 msgstr "Facebook Token"
 
@@ -185,6 +256,10 @@ msgstr "Vystupuje"
 #: wpimprov_display.php:454
 msgid "Place"
 msgstr "Místo"
+
+#: wpimprov_display.php:456
+msgid "Event time"
+msgstr "Čas události"
 
 #. Name of the plugin
 msgid "Improv events & teams"
