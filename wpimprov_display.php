@@ -341,7 +341,7 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
         $result.= '</div>';
          return $result;
 }
-return "asdasdasd";
+    return "";
 }
 
 function wpimprov_list_display( $atts ){
