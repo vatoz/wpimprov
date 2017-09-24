@@ -273,7 +273,7 @@ function wpimprov_team_calendar($post_id  ){
         
         $result= '<div class="team_calendar">'.
                 ($future?"<h1 id=team_future >".__('Future events', 'wpimprov')."</h1>".$future:'<span id=no_future>'.__('No future events', 'wpimprov').'</span>')
-                .
+                .'<br>'.
                 ($past?"<h1 id=team_past>".__('Past events', 'wpimprov')."</h1>".$past:'<span=no_past>'.__('No past events', 'wpimprov').'</span>')        
                 .
                 "</div>"  
@@ -286,17 +286,9 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
 		
 	$date = new DateTime("now");
 	
-        
         $args = array(
         'post_type' => 'wpimprov_event',
-        'tax_query' => array(
-            array(
-            'taxonomy' => 'wpimprov_event_team',
-            'field' => 'id',
-            'terms' => wpimprov_taxonomy_from_post($post_id)
-             )
-        ),
-        
+           
 	'posts_per_page'         => 150,    
         'meta_query'=>array(
             'key' => 'wpimprov-event-start-time',    
@@ -306,6 +298,14 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
         'orderby'  => array( 'meta_value' => $future?'ASC':'DESC', 'title' => 'ASC' ),
 	'meta_key' => 'wpimprov-event-start-time'    
         );
+        
+        if($post_id>0){
+            $args['tax_query']['terms'] = wpimprov_taxonomy_from_post($post_id);
+             $args['taxonomy'] = 'wpimprov_event_team';
+            $args['field'] = 'id';
+            
+        }    
+         
         
         $query2 = new WP_Query( $args ); 
         $result="<div class=wpimprov_".($future?'future':'past').">";
@@ -341,7 +341,7 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
         $result.= '</div>';
          return $result;
 }
-
+return "asdasdasd";
 }
 
 function wpimprov_list_display( $atts ){
@@ -441,11 +441,15 @@ function wpimprov_list_display( $atts ){
 return "no results";
 }
 
-
+function wpimprov_allteam(){
+    return wpimprov_team_calendar(0);
+}
 
 add_shortcode( 'wpimprov_calendar', 'wpimprov_calender_display' );
 
 add_shortcode( 'wpimprov_teams' , 'wpimprov_teams_display' );
+
+add_shortcode( 'wpimprov_allteam' , 'wpimprov_allteam' );
 
 add_shortcode( 'wpimprov_teams_map' , 'wpimprov_teams_map_display' );
 function wpimprov_strings(){
