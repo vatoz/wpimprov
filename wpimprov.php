@@ -396,6 +396,10 @@ function wpimprov_settings_init() {
     add_settings_field(
             'wpimprov_textarea_fb_token', __('Facebook token', 'wpimprov'), 'wpimprov_textarea_field_fb_token_render', 'pluginPage', 'wpimprov_pluginPage_section_fb'
     );
+	
+    add_settings_field(
+            'wpimprov_textarea_disclaimer', __('Event disclaimer', 'wpimprov'), 'wpimprov_textarea_field_disclaimer_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
+    );	
 }
 
 function wpimprov_textarea_field_tagging_render() {
@@ -429,7 +433,13 @@ function wpimprov_textarea_field_fbimport_render() {
     <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_fbimport]'><?php echo $options['wpimprov_textarea_fbimport']; ?></textarea>
     <?php
 }
+function wpimprov_textarea_field_disclaimer_render(){
+    $options = get_option('wpimprov_settings');
+    ?>
+    <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_disclaimer]'><?php echo $options['wpimprov_textarea_disclaimer']; ?></textarea>
+    <?php
 
+}
 function wpimprov_textarea_field_fb_app_secret_render() {
 
     $options = get_option('wpimprov_settings');
