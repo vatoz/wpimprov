@@ -300,10 +300,9 @@ function wpimprov_team_calendar_internal( $post_id,$future=true ){
         );
         
         if($post_id>0){
-            $args['tax_query']['terms'] = wpimprov_taxonomy_from_post($post_id);
-             $args['taxonomy'] = 'wpimprov_event_team';
-            $args['field'] = 'id';
-            
+            $args['tax_query'][0]['terms'] = wpimprov_taxonomy_from_post($post_id);
+            $args['tax_query'][0]['taxonomy'] = 'wpimprov_event_team';
+            $args['tax_query'][0]['field'] = 'id';
         }    
          
         
