@@ -80,14 +80,14 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
     
         $data=array();
         foreach(array('id','name','description','ticket_uri','start_time','end_time','cover') as $Key){
-            $data[$Key]=$Akce[$Key];            
+            if(isset($Akce[$Key]))  $data[$Key]=$Akce[$Key];            
         }
         
         
-        $tmp2=(array)$tmp2['place'];
+        $tmpplace=(array)$tmp2['place'];
         
-        $tmp3=(array)$tmp2['location'];
-        $data['venue']= $tmp2['name'];
+        $tmp3=(array)$tmpplace['location'];
+        $data['venue']= $tmpplace['name'];
         $data["street"]=$tmp3['street'];
         $data["city"]=$tmp3['city'];
         $data['latitude']=$tmp3['latitude'];
@@ -98,7 +98,15 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
         $data["keyword"]=$this->key_from_tags($data["name"], $TagHelper);
         if ($data["keyword"]=="")   $data["keyword"]=$this->key_from_tags($data["description"], $TagHelper);
         
-        
+        $image_id =$this->_wpImage_upload($data["cover"],$data["id"]." - ".$data["name"]);
+
+        if(!isset($Akce['event_times'])){
+            $Akce['event_times'][]=$Akce;
+            if(VERBOSE) echo 'single<br>';    
+        }else{
+            if(VERBOSE) echo 'multiple<br>';
+        }
+        foreach($Akce['event_times'] as $event_time){
         $post=wp_insert_post(
                 array(
                     'post_content'=>$data['description'],
@@ -107,9 +115,9 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
                     'post_status'=>'publish',
                 
                     'meta_input'=>array(
-                         'wpimprov-event-start-time'=>$this->fb_date_2_local_date($data['start_time']),
-                         'wpimprov-event-end-time'=>$this->fb_date_2_local_date($data['end_time']),      
-                         'wpimprov-event-fb'=>$data['id'],
+                         'wpimprov-event-start-time'=>$this->fb_date_2_local_date($event_time['start_time']),
+                         'wpimprov-event-end-time'=>$this->fb_date_2_local_date($event_time['end_time']),      
+                         'wpimprov-event-fb'=>$Akce['id'],
                          'wpimprov-event-venue'=>$data['venue'],
                         'wpimprov-event-venue-street'=>$data['street'],
                         'wpimprov-event-venue-city'=>$data['city'],
@@ -131,13 +139,10 @@ function wpSaveEvent($Id,$Source,$TagHelper, $TeamHierarchy=0){
        if($TeamHierarchy>0){
             wp_set_post_terms( $post, array( $TeamHierarchy), "wpimprov_event_team", true );  
        }
-       
-       
-       $this->_wpImage($post,$data["cover"],$data["id"]." - ".$data["name"]);
-}
-
-function _wpImage($post_id,$url,$Description){
-        
+       set_post_thumbnail($post,$image_id);    
+        }
+       }
+function _wpImage_upload($url, $Description){        
         // Need to require these files
 	if ( !function_exists('media_handle_upload') ) {
 		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
@@ -164,14 +169,15 @@ function _wpImage($post_id,$url,$Description){
 	}
 
 	// do the validation and storage stuff
-	$id = media_handle_sideload( $file_array, $post_id, $desc );
+	$id = media_handle_sideload( $file_array, 0, $desc );
 
 	// If error storing permanently, unlink
 	if ( is_wp_error($id) ) {
 		@unlink($file_array['tmp_name']);
 		return $id;
 	}
-        set_post_thumbnail($post_id,$id);    
+        return $id;
+        
 }
 
 function key_from_tags($text,$tags){
