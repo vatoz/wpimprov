@@ -242,7 +242,8 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
     if ($Verbose)
         echo $Source . "<br>";
     flush();
-
+    
+    
     $tmp = $fa->getEvents($Source, wpimprov_date_mod($Refreshed));
 
 

@@ -15,20 +15,22 @@ use Facebook\FacebookRequestException;
 class fbActions {
     public $statRequests=0;
     private $fb;
+   
     function __construct( $app_id,$app_secret,$token){
     $this->fb=new Facebook\Facebook([
     'app_id' => $app_id,
     'app_secret' => $app_secret,
-    'default_graph_version' => 'v2.7',
+    'default_graph_version' => 'v2.12',
     'default_access_token' => $token,
     ]);
+    
    } 
 
     
 /* Nahraje data z fb
  */
 private function gt($Request, $print=true){
-		if(VERBOSE) echo "GT: ".$Request."<br>";
+    if(VERBOSE) echo "GT: ".$Request."<br>";
     global $statRequests;
     $statRequests++;
   
@@ -204,7 +206,11 @@ Načte z Facebooku  události sdílené stránkou
   * @todo test
   *   */
 function getEvents($Page,$Since="now"){
-		if(VERBOSE) echo "getEvents ".$Page."<br>";
+		
+    $t=$this->gt("me");
+    var_export($t);
+    
+    if(VERBOSE) echo "getEvents ".$Page."<br>";
     if($Since=="now"){
         $date = new DateTime("now");
          
