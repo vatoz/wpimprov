@@ -1,0 +1,2 @@
+Facebook integration of this Wordpress plugin takes list of logged-in user events and allow him to publish them in public shared calendar.
+While it publish just publish events accesible by other means, you should not use this app nor ths function.
