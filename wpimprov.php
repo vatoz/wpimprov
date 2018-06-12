@@ -396,8 +396,8 @@ if(!session_id()) {
 
   $helper = $fb->getRedirectLoginHelper();
   
-  //$permissions = ['user_events']; // Optional permissions
-  $permissions=array('email');
+  $permissions = ['user_events']; // Optional permissions
+  
   $loginUrl = $helper->getLoginUrl(menu_page_url('wpimprov_fb_login_callback',false), $permissions);
   
   echo '<a href="' . htmlspecialchars($loginUrl) . '">Log in with Facebook!</a>';
