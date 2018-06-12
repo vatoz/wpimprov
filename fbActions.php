@@ -52,7 +52,38 @@ private function gt($Request, $print=true){
 }
 
 }
-
+private function mametest($mame,$Id) {
+    foreach ($mame as $r) {
+            if ($r['id'] == $Id) {
+                return true;
+                //echo "uz je v db , ignoruji".RA;
+            }
+        }
+        return false;
+}
+public function user_load($formuri,$mame,$TagHelper){
+echo 'start<br>Choose events to upload<form action="'.$formuri.'" method=post>' ;
+      $ja=$this->gt('/me',false);
+      
+       echo "loading for ".$ja['name']."<br>";
+    
+       $load=$this->gt('/me/events?limit=100&fields=cover,ticket_uri,place,name,description,id,start_time,end_time,event_times',false);
+       //$load=$this->gt('/me/events',false);
+       foreach ($load['data']as $event){
+        if($this->mametest($mame,$event['id'])){
+            echo 'uz mame'   .$event['id'].'<br>';
+        }else{
+       
+       if(isset($_REQUEST['load'][$event['id']])){
+        $this->wpSaveEventFromData($event,$TagHelper);
+       }else{
+        echo '<input type=checkbox name="load['.$event['id'].']">'.$event['name'].' -  '.$event['id'].' <br>' ;
+       //var_export($event,false);
+       }
+       }      }
+                     echo "<input type=submit></form>" ;
+       
+}
 
 private function fb_date_2_local_date($date){
     if(strlen($date)>10){        
@@ -62,7 +93,81 @@ private function fb_date_2_local_date($date){
     }else{
         return "";
     }
-} 
+}
+function wpSaveEventFromData($Akce,$TagHelper){
+	 
+        $tmp2=$Data;        
+        if(!isset($Akce['ticket_uri'])){
+            $Akce['ticket_uri']="";
+        }
+        
+         
+        $Akce['cover']=$Akce['cover']['source'] ;
+    
+        $data=array();
+        foreach(array('id','name','description','ticket_uri','start_time','end_time','cover') as $Key){
+            if(isset($Akce[$Key]))  $data[$Key]=$Akce[$Key];            
+        }
+        
+        
+        $tmpplace=(array)$Akce['place'];
+        
+        $tmp3=(array)$tmpplace['location'];
+        $data['venue']= $tmpplace['name'];
+        $data["street"]=$tmp3['street'];
+        $data["city"]=$tmp3['city'];
+        $data['latitude']=$tmp3['latitude'];
+        $data['longitude']=$tmp3['longitude'];
+ 
+        
+        $data["keyword"]=$this->key_from_tags($data["name"], $TagHelper);
+        if ($data["keyword"]=="")   $data["keyword"]=$this->key_from_tags($data["description"], $TagHelper);
+        
+        $image_id =$this->_wpImage_upload($data["cover"],$data["id"]." - ".$data["name"]);
+
+        if(!isset($Akce['event_times'])){
+            $Akce['event_times'][]=$Akce;
+            if(VERBOSE) echo 'single<br>';    
+        }else{
+            if(VERBOSE) echo 'multiple<br>';
+        }
+        foreach($Akce['event_times'] as $event_time){
+        $post=wp_insert_post(
+                array(
+                    'post_content'=>$data['description'],
+                    'post_title'=>$data['name'],
+                    'post_type'=>"wpimprov_event",
+                    'post_status'=>'publish',
+                
+                    'meta_input'=>array(
+                         'wpimprov-event-start-time'=>$this->fb_date_2_local_date($event_time['start_time']),
+                         'wpimprov-event-end-time'=>$this->fb_date_2_local_date($event_time['end_time']),      
+                         'wpimprov-event-fb'=>$Akce['id'],
+                         'wpimprov-event-venue'=>$data['venue'],
+                        'wpimprov-event-venue-street'=>$data['street'],
+                        'wpimprov-event-venue-city'=>$data['city'],
+                         'wpimprov-event-ticket-uri'=>$data['ticket_uri'],
+                         'wpimprov-event-geo-latitude'=>$data['latitude'],
+                         'wpimprov-event-geo-longitude'=>$data['longitude']
+                         //,                       'wpimprov-event-source'=>$Source,
+                    )
+                    
+                ),false
+                );
+       
+       $t=term_exists($data["keyword"],"wpimprov_event_type");
+       if(is_array($t)){
+         wp_set_post_terms( $post, array( $t['term_taxonomy_id']), "wpimprov_event_type", true );  
+       }
+       
+       
+       if($TeamHierarchy>0){
+            wp_set_post_terms( $post, array( $TeamHierarchy), "wpimprov_event_team", true );  
+       }
+       set_post_thumbnail($post,$image_id);    
+        }
+       }
+ 
  /*
 Načte z Facebooku jednu událost a uloží jí do databáze
 */
@@ -207,8 +312,7 @@ Načte z Facebooku  události sdílené stránkou
   *   */
 function getEvents($Page,$Since="now"){
 		
-    $t=$this->gt("me");
-    var_export($t);
+    
     
     if(VERBOSE) echo "getEvents ".$Page."<br>";
     if($Since=="now"){

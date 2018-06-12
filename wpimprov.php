@@ -12,6 +12,15 @@
 require 'wpimprov_field.php';
 require "wpimprov_display.php";
 require "wpimprov_sources.php";
+
+if (($loader = require_once __DIR__ . '/vendor/autoload.php') == null)  {                                                                
+  die('Vendor directory not found, Please run composer install.');
+}
+
+use Facebook\FacebookSession;
+use Facebook\FacebookRequest;
+use Facebook\FacebookRequestException;
+
         
 add_action('init', 'wpimprov_create_post_type');
 
@@ -218,7 +227,7 @@ function wpimprov_hook_schedule() {
  */
 
 function wpimprov_cron() {
-    wpimprov_load_facebook(3, false);
+    //todo  wpimprov_load_facebook(3, false);
 
     global $wpdb;
      $wpdb->query("update  " . $wpdb->prefix . "postmeta set meta_value='Praha' where meta_key = 'wpimprov-event-venue-city' and meta_value='Prague' ");
@@ -265,8 +274,8 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
         }
 
         if (!$found) {
-            $fa->wpSaveEvent($Id, $Source, $options['wpimprov_textarea_tagging'], $Taxonomy
-            );
+        $wpdb-query('insert into '. $wpdb->prefix . 'wpimpro_candidates ' . ' (id,team) values('.$candidate.','.$Taxonomy.')');
+            
             $mame[] = array("id" => $Id);
             $saved++;
             if ($saved > $Limit)
@@ -304,9 +313,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
         }
         if(!$found){
             if (strlen($candidate)>7){
-            $fa->wpSaveEvent($candidate, "___", $options['wpimprov_textarea_tagging']);
-            $mame++;
-            if($mame>=$Limit) return;
+            $wpdb-query('insert into '. $wpdb->prefix . 'wpimpro_candidates ' . ' (id) values('.$candidate.')');
             }
         }
     }
@@ -360,12 +367,178 @@ if (is_admin()) {
 function wpimprov_add_admin_menu() {
     add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
     add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
+    //todo add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
     add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
+    //todo  add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
    
+   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'manage_options', 'wpimprov_fb_login', 'wpimprov_login_page');
+   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'manage_options', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
+    if(wpimprov_usertoken()){
+        add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'manage_options', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
+   
+        add_submenu_page("wpimprov_list","Wpimprov: ".__('Forget FB Login', 'wpimprov'), __('Will forget user login', 'wpimprov'), 'manage_options', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
+            
+    }
+}
+
+
+
+function wpimprov_login_page(){
+if(!session_id()) {
+    session_start();
+}
+    $options = get_option('wpimprov_settings');
+    $fb = new Facebook\Facebook([
+  'app_id' => $options['wpimprov_textarea_fb_app_id'], // Replace {app-id} with your app id
+  'app_secret' =>  $options['wpimprov_textarea_fb_app_secret'],
+  'default_graph_version' => 'v3.0',
+  ]);
+
+  $helper = $fb->getRedirectLoginHelper();
+  
+  //$permissions = ['user_events']; // Optional permissions
+  $permissions=array('email');
+  $loginUrl = $helper->getLoginUrl(menu_page_url('wpimprov_fb_login_callback',false), $permissions);
+  
+  echo '<a href="' . htmlspecialchars($loginUrl) . '">Log in with Facebook!</a>';
+  echo "<br>";
+  echo (file_get_contents('privacy.txt'));
+  echo "<br>";
+  echo "callback: <textarea>".menu_page_url('wpimprov_fb_login_callback',false)."</textarea><br>";
+  
+  var_export($_SESSION);
+  
     
 }
+
+function wpimprov_fblogout_page(){
+  wpimprov_setusertoken ("");
+  echo "forgetted;;;";
+
+}
+
+function wpimprov_login_callback_page(){
+if(!session_id()) {
+    session_start();
+}
+
+foreach ( array('state','code','page') as $key){
+  if(isset($_REQUEST[$key])){
+    echo $key.":".$_REQUEST[$key]."<br>";
+  }
+}
+
+
+ $options = get_option('wpimprov_settings');
+    $fb = new Facebook\Facebook([
+  'app_id' => $options['wpimprov_textarea_fb_app_id'], // Replace {app-id} with your app id
+  'app_secret' =>  $options['wpimprov_textarea_fb_app_secret'],
+  'default_graph_version' => 'v3.0',
+  ]);
+
+$helper = $fb->getRedirectLoginHelper();
+$_SESSION['FBRLH_state']=$_GET['state'];
+try {
+  $accessToken = $helper->getAccessToken();
+} catch(Facebook\Exceptions\FacebookResponseException $e) {
+  // When Graph returns an error
+  echo 'Graph returned an error (1): ' . $e->getMessage();
+  exit;
+} catch(Facebook\Exceptions\FacebookSDKException $e) {
+  // When validation fails or other local issues
+  echo 'Facebook SDK returned an error (2): ' . $e->getMessage();
+  exit;
+}
+
+if (! isset($accessToken)) {
+  if ($helper->getError()) {
+    header('HTTP/1.0 401 Unauthorized');
+    echo "Error: " . $helper->getError() . "\n";
+    echo "Error Code: " . $helper->getErrorCode() . "\n";
+    echo "Error Reason: " . $helper->getErrorReason() . "\n";
+    echo "Error Description: " . $helper->getErrorDescription() . "\n";
+  } else {
+    header('HTTP/1.0 400 Bad Request');
+    echo 'Bad request';
+  }
+  exit;
+}
+
+// Logged in
+echo '<h3>Access Token</h3>';
+var_dump($accessToken->getValue());
+
+// The OAuth 2.0 client handler helps us manage access tokens
+$oAuth2Client = $fb->getOAuth2Client();
+
+// Get the access token metadata from /debug_token
+$tokenMetadata = $oAuth2Client->debugToken($accessToken);
+echo '<h3>Metadata</h3>';
+var_dump($tokenMetadata);
+
+// Validation (these will throw FacebookSDKException's when they fail)
+$tokenMetadata->validateAppId($options['wpimprov_textarea_fb_app_id']); // Replace {app-id} with your app id
+// If you know the user ID this access token belongs to, you can validate it here
+//$tokenMetadata->validateUserId('123');
+$tokenMetadata->validateExpiration();
+
+if (! $accessToken->isLongLived()) {
+  // Exchanges a short-lived access token for a long-lived one
+  try {
+    $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
+  } catch (Facebook\Exceptions\FacebookSDKException $e) {
+    echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
+    exit;
+  }
+
+  echo '<h3>Long-lived</h3>';
+  var_dump($accessToken->getValue());
+}
+  wpimprov_setusertoken ($accessToken);
+    echo "<br>token set.<br>";
+
+    echo $accessToken;
+    
+
+  
+
+
+
+}
+
+function wpimprov_setusertoken($Value){
+
+    global $current_user;
+    if (is_user_logged_in()){ //check if user is logged in.
+            // get current user info
+           $u= get_currentuserinfo();
+            //$old_notes = get_user_meta($current_user->ID, 'fb_token', true);
+            
+                //first note we are saving fr this user
+update_user_meta( $u->ID, 'fb_token', $Value);
+            
+        
+ 
+}
+
+}
+function wpimprov_usertoken(){
+    global $current_user;
+    if( is_user_logged_in()){ //check if user is logged in.
+        // get current user info
+       $u=  get_currentuserinfo();
+        $old_notes = get_user_meta($u->ID, 'fb_token', true);
+        if (!isset($old_notes)){
+            return false;
+        }
+        if (isset($old_notes)){//we have notes. Removed the extra ! here.
+           return  $old_notes ;
+            }
+        }
+                
+    }
+
+
 
 function wpimprov_settings_init() {
 
@@ -496,7 +669,14 @@ function wpimprov_options_page() {
 
 }
 
+function wpimprov_userevents_page(){
+ $options = get_option('wpimprov_settings');
+    require_once 'fbActions.php';
 
+   $fa = new fbActions($options['wpimprov_textarea_fb_app_id'], $options['wpimprov_textarea_fb_app_secret'],wpimprov_usertoken());
+   $fa->user_load(menu_page_url('wpimprov_fb_user_events',false),wpimprov_get_loaded(), $options['wpimprov_textarea_tagging']);
+   
+}
 function wpimprov_load_page() {
     wpimprov_load_facebook(2, true);
 }
@@ -506,20 +686,29 @@ function wpimprov_load_page() {
 
 function wpimprov_install() {
     global $wpdb;
-    $wp_improv_version = 4;
+    $wp_improv_version = 7;
     $installed = get_option("wpimprov_db_version");
     if ($installed !== $wp_improv_version) {
         $table_name = $wpdb->prefix . 'wpimpro_sources';
+        $table_name_2 = $wpdb->prefix . 'wpimpro_candidates';
 
         $charset_collate = $wpdb->get_charset_collate();
-
-        $sql = "
+        $sql=array();
+        $sql[] = "
     CREATE TABLE `$table_name` (
     `id` bigint(64) NOT NULL AUTO_INCREMENT,
     `source` varchar(80) NOT NULL,
     `description` varchar(80) ,
     `refreshed` date  NOT NULL DEFAULT '2005-01-01',
   	UNIQUE KEY id (id)
+)       $charset_collate;";
+
+
+        $sql[] = "
+    CREATE TABLE `$table_name_2` (
+    `id` bigint(64) NOT NULL
+  	,`team` int,
+     
 )       $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
