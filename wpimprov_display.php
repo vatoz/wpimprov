@@ -24,13 +24,7 @@ function wpimprov_calender_display( $atts ){
         
         $args = array(
         'post_type' => 'wpimprov_event',
-        'tax_query' => array(
-            array(
-            'taxonomy' => 'wpimprov_event_type',
-            'field' => 'id',
-            'terms' =>  $t['term_taxonomy_id']
-             )
-        ),
+       
         
 	'posts_per_page'         => 100,    
         'meta_query'=>array(
@@ -43,6 +37,20 @@ function wpimprov_calender_display( $atts ){
 	'meta_key' => 'wpimprov-event-start-time'    
             
         );
+        
+        if($atts["list"]==""){
+        }else{
+         $args['tax_query'] = array(
+            array(
+            'taxonomy' => 'wpimprov_event_type',
+            'field' => 'id',
+            'terms' =>  $t['term_taxonomy_id']
+             )
+        );
+        
+        }
+        
+        
         $query2 = new WP_Query( $args ); 
 
         $posts_ar=array();   
