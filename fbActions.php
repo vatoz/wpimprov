@@ -62,19 +62,20 @@ private function mametest($mame,$Id) {
         return false;
 }
 public function user_load($formuri,$mame,$TagHelper){
-echo 'start<br>Choose events to upload<form action="'.$formuri.'" method=post>' ;
+echo '<strong>Choose events to upload</strong><form action="'.$formuri.'" method=post>' ;
       $ja=$this->gt('/me',false);
       
-       echo "loading for ".$ja['name']."<br>";
+       echo "loading nonduplicate events for ".$ja['name']."<br>";
     
        $load=$this->gt('/me/events?limit=100&fields=cover,ticket_uri,place,name,description,id,start_time,end_time,event_times',false);
        //$load=$this->gt('/me/events',false);
        foreach ($load['data']as $event){
         if($this->mametest($mame,$event['id'])){
-            echo 'uz mame'   .$event['id'].'<br>';
+            echo '<!--uz mame'   .$event['id'].' -->';
         }else{
        
        if(isset($_REQUEST['load'][$event['id']])){
+        echo '<strong>Saving '.$event['name'].' to db</strong> ';
         $this->wpSaveEventFromData($event,$TagHelper);
        }else{
         echo '<input type=checkbox name="load['.$event['id'].']">'.$event['name'].' -  '.$event['id'].' <br>' ;
