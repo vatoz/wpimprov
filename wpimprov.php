@@ -366,18 +366,18 @@ if (is_admin()) {
 }
 
 function wpimprov_add_admin_menu() {
-    add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'author', 'wpimprov_list', 'wpimprov_list_page');
-     add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'administrator', 'wpimprov_sources', "wpimprov_sources_page_handler");
-     add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'administrator', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'administrator', 'wpimprov_settings', 'wpimprov_options_page');
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'administrator', 'wpimprov_fbload', 'wpimprov_load_page');
+    add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'administrator', 'wpimprov_list_page');
+     add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
+     add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
+    add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
    
-   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'author', 'wpimprov_fb_login', 'wpimprov_login_page');
-   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'author', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
+   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'manage_options', 'wpimprov_fb_login', 'wpimprov_login_page');
+   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'manage_options', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
     
-        add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'author', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
+        add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'manage_options', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
    
-        add_submenu_page("wpimprov_list","Wpimprov: ".__('FB Logout', 'wpimprov'), __('fb logout', 'wpimprov'), 'author', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
+        add_submenu_page("wpimprov_list","Wpimprov: ".__('FB Logout', 'wpimprov'), __('fb logout', 'wpimprov'), 'manage_options', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
             
    
 }
