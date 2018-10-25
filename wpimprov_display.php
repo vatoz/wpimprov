@@ -117,6 +117,11 @@ function wpimprov_calender_display( $atts ){
 return "no results";
 }
 
+
+function wpimprov_date_day($date){
+  $d=new DateTime($date);//substr($date,0,10));
+  return (strtolower(date_i18n ("l",$d->getTimestamp() )));
+}
 function wpimprov_date_nice($date){
     return wpimprov_date_dmy( $date)." ".wpimprov_date_hours( $date) ;
 }
@@ -392,55 +397,46 @@ function wpimprov_list_display( $atts ){
 
         $posts_ar=array();   
         if ( $query2->have_posts() ) {
+        
+        $date->add(new DateInterval("P7D"));
 	// The 2nd Loop
 	while ( $query2->have_posts() ) {
 		$query2->the_post();
+                $meta=get_post_meta($query2->post->ID, '', true);      
+                if( substr($meta['wpimprov-event-start-time'][0],0,10) <= $date->format('Y-m-d')  ){
                 ob_start();
-                $meta=get_post_meta($query2->post->ID, '', true);
                 
-                echo  '* @'. $meta['wpimprov-event-source'][0].' ('.get_the_title( $query2->post->ID ).') - ';
                 
-                echo  $meta['wpimprov-event-venue-city'][0].', '.$meta['wpimprov-event-venue'][0];
                 
-       
-                echo' - ' ;
-                //$result.=var_export($query2->post,true);
-               
-                
+                echo  '*';
+                //echo substr($meta['wpimprov-event-start-time'][0],8,2) ." ";
+                echo wpimprov_date_day($meta['wpimprov-event-start-time'][0]);
+                echo " ";
                 echo wpimprov_date_hours($meta['wpimprov-event-start-time'][0]);
                 
+                echo ' - @'. get_the_title( $query2->post->ID ).' - ';
                 
+                echo  $meta['wpimprov-event-venue'][0];
+                              
                 echo  "\n";
-                $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
+                $str=ob_get_clean();
+                $posts_ar[$meta['wpimprov-event-venue-city'][0] ][]=$str;
+                }else{
+                 // $result.=  $date->format('Y-m-d')."\n"; 
+                }  
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}
+  
+  asort($posts_ar);
+ 
+  foreach ($posts_ar as $City=>$Gigs){
+      $result.=$City."\n";
+      foreach ($Gigs as $Gig){
+        $result.=$Gig;  
+      }
+      $result.="\n";    
+  }   
         
-       
-	$date = new DateTime("now");
-	if ($date->format('N')>1){
-            $date->sub(new DateInterval("P".($date->format('N')-1)."D"));
-        }
-	for($i=0;$i<(isset($atts["weeks"])?intval($atts["weeks"]):5);$i++){
-	$result.="\n";
-	for($j=0;$j<7;$j++){
-             if((!isset($atts["hideempty"]))||isset($posts_ar[$date->format('Y-m-d')])){
-         
-            $result.=date_i18n ("l", $date->getTimestamp())." " ;
-            $result.=trim($date->format('d.'),"0"). trim($date->format('m.'),'0')."\n" ;
-            if(isset($posts_ar[$date->format('Y-m-d')]) ){
-                $result.=implode("",$posts_ar[$date->format('Y-m-d')]);
-               
-            }
-            }
-            $date->add(new DateInterval("P1D"));	
-	$result.="\n";//week
-	
-            
-            }
-	$result.="\n";//week
-	
-	}
-	 	
         $result.="</textarea>";        
         
          return $result;
