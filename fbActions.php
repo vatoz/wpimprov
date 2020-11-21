@@ -20,7 +20,7 @@ class fbActions {
     $this->fb=new Facebook\Facebook([
     'app_id' => $app_id,
     'app_secret' => $app_secret,
-    'default_graph_version' => 'v2.12',
+    'default_graph_version' => 'v6.0',
     'default_access_token' => $token,
     ]);
     

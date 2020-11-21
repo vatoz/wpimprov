@@ -13,7 +13,7 @@ require 'wpimprov_field.php';
 require "wpimprov_display.php";
 require "wpimprov_sources.php";
 
-if (($loader = require_once __DIR__ . '/vendor/autoload.php') == null)  {                                                                
+if (($loader = require_once __DIR__ . '/vendor/autoload.php') == null)  {
   die('Vendor directory not found, Please run composer install.');
 }
 
@@ -21,7 +21,7 @@ use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\FacebookRequestException;
 
-        
+
 add_action('init', 'wpimprov_create_post_type');
 
 /*
@@ -136,7 +136,7 @@ function wpimprov_add_post_meta_boxes() {
 }
 
 /* Will return array() of wpimprov_field
- * @param string content_type Usually wpimprov_team or wpimprov_event 
+ * @param string content_type Usually wpimprov_team or wpimprov_event
  */
 
 function wpimprov_field_def($content_type) {
@@ -147,11 +147,11 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-team-web', __("Webpages", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-team-city', __("City", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-team-alias', __("Alias", 'wpimprov'), 'text');
-            
+
             $Result[] = new wpimprov_field('wpimprov-team-refreshed', __("Refreshed", 'wpimprov'), 'date');
             $Result[] = new wpimprov_field('wpimprov-team-geo-latitude', __("Latitude", 'wpimprov'), 'float');
             $Result[] = new wpimprov_field('wpimprov-team-geo-longitude', __("Longitude", 'wpimprov'), 'float');
-            
+
             break;
         case "wpimprov_event":
             $Result[] = new wpimprov_field('wpimprov-event-fb', __("Facebook event id", 'wpimprov'), 'text');
@@ -160,7 +160,7 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-event-venue', __("Venue", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-event-venue-city', __("Venue city", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-event-venue-street', __("Venue street", 'wpimprov'), 'text');
-            
+
             $Result[] = new wpimprov_field('wpimprov-event-ticket-uri', __("Tickets", 'wpimprov'), 'text');
             $Result[] = new wpimprov_field('wpimprov-event-geo-latitude', __("Latitude", 'wpimprov'), 'float');
             $Result[] = new wpimprov_field('wpimprov-event-geo-longitude', __("Longitude", 'wpimprov'), 'float');
@@ -231,7 +231,7 @@ function wpimprov_cron() {
 
     global $wpdb;
      $wpdb->query("update  " . $wpdb->prefix . "postmeta set meta_value='Praha' where meta_key = 'wpimprov-event-venue-city' and meta_value='Prague' ");
-    
+
 }
 
 /* Get wpimprov-event-fb meta values,
@@ -251,8 +251,8 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
     if ($Verbose)
         echo $Source . "<br>";
     flush();
-    
-    
+
+
     $tmp = $fa->getEvents($Source, wpimprov_date_mod($Refreshed));
 
 
@@ -275,7 +275,7 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
 
         if (!$found) {
         $wpdb-query('insert into '. $wpdb->prefix . 'wpimpro_candidates ' . ' (id,team) values('.$candidate.','.$Taxonomy.')');
-            
+
             $mame[] = array("id" => $Id);
             $saved++;
             if ($saved > $Limit)
@@ -294,7 +294,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
     $options = get_option('wpimprov_settings');
     require_once 'fbActions.php';
     $fa = new fbActions($options['wpimprov_textarea_fb_app_id'], $options['wpimprov_textarea_fb_app_secret'], $options['wpimprov_textarea_fb_token']);
-    
+
     $loaded=0;
     $mame= wpimprov_get_loaded();
     $toload= explode("\n",$options['wpimprov_textarea_fbimport']);
@@ -307,7 +307,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
                 $found = true;
                 unset($toload[$key]);
              if($Verbose) echo $candidate." vyrazuji<br>";
-               
+
                 //echo "uz je v db , ignoruji".RA;
             }
         }
@@ -320,7 +320,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
     $options[  'wpimprov_textarea_fbimport']= implode("\n",$toload);
         update_option("wpimprov_settings",$options);
 
-    
+
 
     $zdroje = $wpdb->get_results("select fb.post_id,fb.meta_value as source, dt.meta_value as refreshed from(select * from "
             . "" . $wpdb->prefix . "postmeta where meta_key='wpimprov-team-fb' )"
@@ -361,7 +361,7 @@ function wpimprov_load_facebook($Limit = 5, $Verbose = false) {
 
  add_action('admin_menu', 'wpimprov_add_admin_menu');
 if (is_admin()) {
-   
+
     add_action('admin_init', 'wpimprov_settings_init');
 }
 
@@ -370,46 +370,71 @@ function wpimprov_add_admin_menu() {
      add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
      add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
     add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
-   
+  //  add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
+
    add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'manage_options', 'wpimprov_fb_login', 'wpimprov_login_page');
    add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'manage_options', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
-    
+
         add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'manage_options', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
-   
+
         add_submenu_page("wpimprov_list","Wpimprov: ".__('FB Logout', 'wpimprov'), __('fb logout', 'wpimprov'), 'manage_options', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
-            
-   
+
+
 }
 
 
 
 function wpimprov_login_page(){
-if(!session_id()) {
-    session_start();
-}
+  if(!session_id()) {
+      session_start();
+  }
+
     $options = get_option('wpimprov_settings');
     $fb = new Facebook\Facebook([
   'app_id' => $options['wpimprov_textarea_fb_app_id'], // Replace {app-id} with your app id
   'app_secret' =>  $options['wpimprov_textarea_fb_app_secret'],
-  'default_graph_version' => 'v3.0',
+  'default_graph_version' => 'v9.0'
   ]);
 
+
   $helper = $fb->getRedirectLoginHelper();
-  
+
   $permissions = ['user_events']; // Optional permissions
-  
+
   $loginUrl = $helper->getLoginUrl(menu_page_url('wpimprov_fb_login_callback',false), $permissions);
-  
+  //$a=$helper->getSessionFromRedirect();
+  //echo ":aaaa:".var_export($a,true);
+
+  //session_write_close ();
+  $k=explode("&",$loginUrl );
+  foreach ($k as $r ) {
+    if(strpos($r,'state')===0){
+      echo "<b>".$r."</b><br>";
+      $r=substr($r,6);
+    //  $_SESSION['FBRLH_state']=$r;
+      //$_SESSION['state']=$r;
+      //$_COOKIE['state']=$r;
+      //$wp_session['state']=$r;
+      $options["state"]=$r;
+      update_option("wpimprov_settings",$options);
+    }else{
+      echo $r."<br>";
+    }
+
+  }
+
+
   echo '<a href="' . htmlspecialchars($loginUrl) . '">Log in with Facebook!</a>';
   echo "<br>";
   echo (file_get_contents('privacy.txt'));
   echo "<br>";
   echo "callback: <textarea>".menu_page_url('wpimprov_fb_login_callback',false)."</textarea><br>";
-  
+  echo session_status();
+  echo "<hr>session<br>";
   var_export($_SESSION);
-  
-    
+  echo "<hr>cookie<br>";
+  var_export($_COOKIE);
+
 }
 
 function wpimprov_fblogout_page(){
@@ -423,9 +448,22 @@ if(!session_id()) {
     session_start();
 }
 
+  $options = get_option('wpimprov_settings');
+  $_SESSION["state"]=$options["state"];
+//$_SESSION['state']=$_GET['state'];
+$_SESSION['FBRLH_state']=$options['state'];
+//$_SESSION['state']=$_GET['state'];
+
+//$_COOKIE['state']=$_GET['state'];
+echo "<hr>session<br>";
+var_export($_SESSION);
+echo "<hr>cookie<br>";
+var_export($_COOKIE);
+
+
 foreach ( array('state','code','page') as $key){
   if(isset($_REQUEST[$key])){
-    echo $key.":".$_REQUEST[$key]."<br>";
+    echo"<hr>". $key."<br>".$_REQUEST[$key]."<br>";
   }
 }
 
@@ -434,11 +472,14 @@ foreach ( array('state','code','page') as $key){
     $fb = new Facebook\Facebook([
   'app_id' => $options['wpimprov_textarea_fb_app_id'], // Replace {app-id} with your app id
   'app_secret' =>  $options['wpimprov_textarea_fb_app_secret'],
-  'default_graph_version' => 'v3.0',
+  'default_graph_version' => 'v9.0', "state"=>$_SESSION["state"]
   ]);
 
 $helper = $fb->getRedirectLoginHelper();
-$_SESSION['FBRLH_state']=$_GET['state'];
+if(isset($_GET['state'])) {
+	$helper->getPersistentDataHandler()->set('state', $_GET['state']);
+}
+
 try {
   $accessToken = $helper->getAccessToken();
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -499,9 +540,9 @@ if (! $accessToken->isLongLived()) {
     echo "<br>token set.<br>";
 
     echo $accessToken;
-    
 
-  
+
+
 
 
 
@@ -514,12 +555,12 @@ function wpimprov_setusertoken($Value){
             // get current user info
            $u= get_currentuserinfo();
             //$old_notes = get_user_meta($current_user->ID, 'fb_token', true);
-            
+
                 //first note we are saving fr this user
 update_user_meta( $u->ID, 'fb_token', $Value);
-            
-        
- 
+
+
+
 }
 
 }
@@ -536,7 +577,7 @@ function wpimprov_usertoken(){
            return  $old_notes ;
             }
         }
-                
+
     }
 
 
@@ -553,7 +594,7 @@ function wpimprov_settings_init() {
     add_settings_section(
             'wpimprov_pluginPage_section_fb', __('Facebook settings', 'wpimprov'), 'wpimprov_settings_section_callback', 'pluginPage'
     );
-    
+
     add_settings_field(
             'wpimprov_textarea_tagging', __('List of tag selectors in form string|tag on new lines', 'wpimprov'), 'wpimprov_textarea_field_tagging_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
     );
@@ -571,10 +612,10 @@ function wpimprov_settings_init() {
     add_settings_field(
             'wpimprov_textarea_fb_token', __('Facebook token', 'wpimprov'), 'wpimprov_textarea_field_fb_token_render', 'pluginPage', 'wpimprov_pluginPage_section_fb'
     );
-	
+
     add_settings_field(
             'wpimprov_textarea_disclaimer', __('Event disclaimer', 'wpimprov'), 'wpimprov_textarea_field_disclaimer_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
-    );	
+    );
 }
 
 function wpimprov_textarea_field_tagging_render() {
@@ -647,8 +688,8 @@ function wpimprov_date_mod($D){
 
 function wpimprov_list_page() {
     echo wpimprov_list_display(array('list'=>'show'));
-    
-    
+
+
 }
 
 function wpimprov_options_page() {
@@ -676,7 +717,7 @@ function wpimprov_userevents_page(){
 
    $fa = new fbActions($options['wpimprov_textarea_fb_app_id'], $options['wpimprov_textarea_fb_app_secret'],wpimprov_usertoken());
    $fa->user_load(menu_page_url('wpimprov_fb_user_events',false),wpimprov_get_loaded(), $options['wpimprov_textarea_tagging']);
-   
+
 }
 function wpimprov_load_page() {
     wpimprov_load_facebook(2, true);
@@ -709,7 +750,7 @@ function wpimprov_install() {
     CREATE TABLE `$table_name_2` (
     `id` bigint(64) NOT NULL
   	,`team` int,
-     
+
 )       $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -756,15 +797,15 @@ function wpimprov_update_custom_terms($post_id) {
         return;
     }
     /*
-     * Grab the post title and slug to use as the new 
+     * Grab the post title and slug to use as the new
      * or updated term name and slug
      */
     $term_title = get_the_title($post_id);
     $term_slug = get_post($post_id)->post_name;
 
     /*
-     * Check if a corresponding term already exists by comparing 
-     * the post ID to all existing term descriptions. 
+     * Check if a corresponding term already exists by comparing
+     * the post ID to all existing term descriptions.
      */
     $existing_terms = get_terms('wpimprov_event_team', array(
         'hide_empty' => false
@@ -783,7 +824,7 @@ function wpimprov_update_custom_terms($post_id) {
         }
     }
     /*
-     * If we didn't find a match above, this is a new post, 
+     * If we didn't find a match above, this is a new post,
      * so create a new term.
      */
     wp_insert_term($term_title, 'wpimprov_event_team', array(
@@ -828,20 +869,20 @@ function wpimprov_responsive_image(){
     $img = wp_get_attachment_image_src( $tn_id, 'full' );
     $width = $img[1];
 
-    
+
     echo '<img src="';
             if($width>300){
                 the_post_thumbnail_url("w_300");
             }else{
-                
+
                 the_post_thumbnail_url("full");
             }
             echo '" srcset="';
-             
+
             the_post_thumbnail_url("full");
             echo " ".$width."w ";
-            
-                        
+
+
             foreach(array(100,300,800,1200) as $size){
                     if($width>$size){
                         echo ",";
@@ -850,7 +891,7 @@ function wpimprov_responsive_image(){
 
                 }
                 }
-                       
+
 
                 echo '" class=img-responsive>';
     return ob_get_clean();
