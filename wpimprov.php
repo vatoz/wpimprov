@@ -165,6 +165,7 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-event-geo-latitude', __("Latitude", 'wpimprov'), 'float');
             $Result[] = new wpimprov_field('wpimprov-event-geo-longitude', __("Longitude", 'wpimprov'), 'float');
             $Result[] = new wpimprov_field('wpimprov-event-source', __("Source", 'wpimprov'), 'text');
+            $Result[] = new wpimprov_field('wpimprov-event-organizer', __("Organizer", 'wpimprov'), 'text');
             break;
     }
     return $Result;
@@ -366,18 +367,16 @@ if (is_admin()) {
 }
 
 function wpimprov_add_admin_menu() {
-    add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
-     add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
-     add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
-    add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
+  add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Other sources', 'wpimprov'), __('Other sources', 'wpimprov'), 'manage_options', 'wpimprov_sources', "wpimprov_sources_page_handler");
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Add other source', 'wpimprov'), __('Add other source', 'wpimprov'), 'manage_options', 'wpimprov_sources_form', "wpimprov_sources_form_page_handler");
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Settings', 'wpimprov'), __('Settings', 'wpimprov'), 'manage_options', 'wpimprov_settings', 'wpimprov_options_page');
   //  add_submenu_page("wpimprov_list","Wpimprov: ".__('Load data', 'wpimprov'), __('Load data', 'wpimprov'), 'manage_options', 'wpimprov_fbload', 'wpimprov_load_page');
-
-   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'manage_options', 'wpimprov_fb_login', 'wpimprov_login_page');
-   add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'manage_options', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
-
-        add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'manage_options', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
-
-        add_submenu_page("wpimprov_list","Wpimprov: ".__('FB Logout', 'wpimprov'), __('fb logout', 'wpimprov'), 'manage_options', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login to facebook', 'wpimprov'), 'manage_options', 'wpimprov_fb_login', 'wpimprov_login_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Login', 'wpimprov'), __('Login callback - todo remove ', 'wpimprov'), 'manage_options', 'wpimprov_fb_login_callback', 'wpimprov_login_callback_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Load user events to system', 'wpimprov'), __('After confirmation it will load user events to db', 'wpimprov'), 'manage_options', 'wpimprov_fb_user_events', 'wpimprov_userevents_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('Load ical events to system', 'wpimprov'), __('After confirmation it will ical events to db', 'wpimprov'), 'manage_options', 'wpimprov_ical_events', 'wpimprov_icalevents_page');
+  add_submenu_page("wpimprov_list","Wpimprov: ".__('FB Logout', 'wpimprov'), __('fb logout', 'wpimprov'), 'manage_options', 'wpimprov_fb_logout', 'wpimprov_fblogout_page');
 
 
 }
@@ -616,6 +615,12 @@ function wpimprov_settings_init() {
     add_settings_field(
             'wpimprov_textarea_disclaimer', __('Event disclaimer', 'wpimprov'), 'wpimprov_textarea_field_disclaimer_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
     );
+
+    add_settings_field(
+            'wpimprov_textarea_ical', __('iCal source of events', 'wpimprov'), 'wpimprov_textarea_field_ical_render', 'pluginPage', 'wpimprov_pluginPage_section_main'
+    );
+
+
 }
 
 function wpimprov_textarea_field_tagging_render() {
@@ -648,6 +653,14 @@ function wpimprov_textarea_field_fbimport_render() {
     ?>
     <textarea cols='40' rows='5' name='wpimprov_settings[wpimprov_textarea_fbimport]'><?php echo $options['wpimprov_textarea_fbimport']; ?></textarea>
     <?php
+}
+
+function wpimprov_textarea_field_ical_render(){
+    $options = get_option('wpimprov_settings');
+    ?>
+    <textarea cols='40' rows='1' name='wpimprov_settings[wpimprov_textarea_ical]'><?php echo $options['wpimprov_textarea_ical']; ?></textarea>
+    <?php
+
 }
 function wpimprov_textarea_field_disclaimer_render(){
     $options = get_option('wpimprov_settings');
@@ -719,6 +732,18 @@ function wpimprov_userevents_page(){
    $fa->user_load(menu_page_url('wpimprov_fb_user_events',false),wpimprov_get_loaded(), $options['wpimprov_textarea_tagging']);
 
 }
+
+function wpimprov_icalevents_page(){
+ $options = get_option('wpimprov_settings');
+    require_once 'icalActions.php';
+
+   $fa = new icalActions($options['wpimprov_textarea_ical']);
+   $fa->user_load(menu_page_url('wpimprov_ical_events',false),wpimprov_get_loaded(), $options['wpimprov_textarea_tagging']);
+
+}
+
+
+
 function wpimprov_load_page() {
     wpimprov_load_facebook(2, true);
 }
@@ -746,7 +771,7 @@ function wpimprov_install() {
 )       $charset_collate;";
 
 
-        $sql[] = "
+    $sql[] = "
     CREATE TABLE `$table_name_2` (
     `id` bigint(64) NOT NULL
   	,`team` int,

@@ -1,5 +1,6 @@
 {
 "require": {
-        "facebook/graph-sdk" : "~5.7"
+        "facebook/graph-sdk" : "~5.7",
+                "johngrogg/ics-parser": "^3.0"
         }
 }
