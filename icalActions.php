@@ -23,28 +23,12 @@ class icalActions {
 
          //$ja=$this->gt('/me',false);
 
-          echo "loading nonduplicate events from ical ".$this->icaldata."<br>";
+          echo "loading nonduplicate events from ical <br>";
 
-          $tmpfname = tempnam("tmp", "ical");
-
-                    $urloptions = array(
-            'http'=>array(
-              'method'=>"GET",
-              'header'=>"Accept-language: en\r\n" .
-                        "User-Agent: Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.102011-10-16 20:23:10\r\n" // i.e. An iPad
-            )
-          );
-          $urlcontext = stream_context_create($urloptions);
-
-
-          $k=file_get_contents($this->icaldata,false,$urlcontext);
-          //echo substr($k,10,100);
-          file_put_contents($tmpfname,$k);
-
-
+//initUrl $this->icaldata
                try {
                  $ical=new ICal();
-                    $ical->initFile($tmpfname);
+                    $ical->initFile($__DIR__."/data.ical");
                } catch (\Exception $e) {
                    die($e);
                }
