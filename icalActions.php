@@ -16,41 +16,29 @@ class icalActions {
     $this->icaldata=$icalurl;
    }
 
-   public function getEvents(){
 
-
-
-
-
-
-     try {
-          $ical->initUrl($this->icaldata, $username = null, $password = null, $userAgent = "wpimprov");
-     } catch (\Exception $e) {
-         die($e);
-     }
-
-     var_export($ical->events());
-
-   }
 
    public function user_load($formuri,$mame,$TagHelper){
    echo '<strong>Choose ical events to upload</strong><form action="'.$formuri.'" method=post>' ;
 
          //$ja=$this->gt('/me',false);
 
-          echo "loading nonduplicate events from ical<br>";
+          echo "loading nonduplicate events from ical ".$this->icaldata."<br>";
+
+          $tmpfname = tempnam("/tmp", "ical");
+          echo ($tmpfname);
+          $k=file_get_contents($this->icaldata);
+          file_put_contents($tmpfname,$k);
 
 
                try {
                  $ical=new ICal();
-                    $ical->initUrl($this->icaldata, $username = null, $password = null, $userAgent = "wpimprov");
+                    $ical->initFile($tmpfname);
                } catch (\Exception $e) {
                    die($e);
                }
 
-            //   var_export($ical->events());
-          //$load=$this->gt('/me/events?limit=100&fields=cover,ticket_uri,place,name,description,id,start_time,end_time,event_times',false);
-          //$load=$this->gt('/me/events',false);
+
           foreach ($ical->events() as $event){
             $tid=$event->description;
             $tid=substr($tid, strrpos($tid,"\n")+1);
@@ -88,7 +76,7 @@ class icalActions {
 
         }
         echo "<input type=submit></form>" ;
-
+        unlink ($tmpfname);
    }
 
 
