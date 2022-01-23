@@ -28,7 +28,7 @@ class icalActions {
 //initUrl $this->icaldata
                try {
                  $ical=new ICal();
-                    $ical->initFile($__DIR__."/data.ical");
+                    $ical->initFile(__DIR__."/data.ical");
                } catch (\Exception $e) {
                    die($e);
                }
