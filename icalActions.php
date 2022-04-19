@@ -63,7 +63,7 @@ class icalActions {
 
             $this->wpSaveEventFromData($event,$TagHelper,$tid);
           }else{
-           echo '<input type=checkbox name="load['.$event->uid.']">'.$event->summary.'    <br>' ;
+           echo '<input type=checkbox name="load['.$event->uid.']">'.$event->summary." ".$this->ical_date_2_local_date( $event->dtstart_tz).'    <br>' ;
 
           //var_export($event,false);
           }
@@ -88,10 +88,14 @@ private function mametest($mame,$Id) {
 }
 
 private function ical_date_2_local_date($date){
+	
     if(strlen($date)>10){
-        $myDateTime = DateTime::createFromFormat('Ymd\THis', $date);
+	$tz_from = new DateTimeZone('UTC');				    
+	$tz_to = new DateTimeZone('Europe/Prague');    
+        $myDateTime = DateTime::createFromFormat('Ymd\THis', $date,$tz_from);
+	$new_time = $myDateTime->setTimezone($tz_to);    
         //$myDateTime->setTimezone(new DateTimeZone(get_option('timezone_string')));
-        return  $myDateTime->format('Y-m-d\TH:i:s');
+        return  $new_time->format('Y-m-d\TH:i:s');
     }else{
         return "";
     }
