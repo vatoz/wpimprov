@@ -151,6 +151,7 @@ function wpimprov_field_def($content_type) {
             $Result[] = new wpimprov_field('wpimprov-team-refreshed', __("Refreshed", 'wpimprov'), 'date');
             $Result[] = new wpimprov_field('wpimprov-team-geo-latitude', __("Latitude", 'wpimprov'), 'float');
             $Result[] = new wpimprov_field('wpimprov-team-geo-longitude', __("Longitude", 'wpimprov'), 'float');
+	    $Result[] = new wpimprov_field('wpimprov-team-inactive', __("Inactive", 'wpimprov'), 'checkbox');
 
             break;
         case "wpimprov_event":
