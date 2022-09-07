@@ -231,6 +231,15 @@ msgstr ""
 msgid "back to list"
 msgstr ""
 
+#: wpimprov.php:300
+msgid "Inactive"
+msgstr ""
+
+#: wpimprov_display.php:208
+msgid "Inactive or historical teams"
+msgstr ""
+
+
 #: wpimprov_sources.php:275
 msgid "Save"
 msgstr ""

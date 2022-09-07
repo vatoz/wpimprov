@@ -3,89 +3,16 @@ msgstr ""
 "Project-Id-Version: Improv events & teams\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-07-23 11:51+0000\n"
-"PO-Revision-Date: 2017-07-23 11:54+0000\n"
+"PO-Revision-Date: 2022-09-08 01:34+0200\n"
 "Last-Translator: vatoz <vatoz@seznam.cz>\n"
 "Language-Team: Czech\n"
-"Language: cs-CZ\n"
-"Plural-Forms: nplurals=3; plural=( n == 1 ) ? 0 : ( n >= 2 && n <= 4 ) ? 1 : "
-"2\n"
+"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco - https://localise.biz/"
-
-#: wpimprov.php:362 wpimprov.php:362
-msgid "Add other source"
-msgstr "Přidat další zdroj"
-
-#: wpimprov_sources.php:55 wpimprov_sources.php:307 wpimprov_sources.php:311
-msgid "Description"
-msgstr "Popis"
-
-#: wpimprov_sources.php:149
-#, php-format
-msgid "Items deleted: %d"
-msgstr "Položka smazána: %d"
-
-#: wpimprov_sources.php:155
-msgid "Sources"
-msgstr "Zdroje"
-
-#: wpimprov_sources.php:156
-msgid "Add new"
-msgstr "Přidat nový"
-
-#: wpimprov_sources.php:219
-msgid "Item was successfully saved"
-msgstr "Položka byla úspěšně uložena"
-
-#: wpimprov_sources.php:221
-msgid "There was an error while saving item"
-msgstr "Při  ukládání došlo k chybě"
-
-#: wpimprov_sources.php:226
-msgid "Item was successfully updated"
-msgstr "Položka byla úspěšně upravena"
-
-#: wpimprov_sources.php:228
-msgid "There was an error while updating item"
-msgstr "Došlo k chybě při ukládání úprav"
-
-#: wpimprov_sources.php:243
-msgid "Item not found"
-msgstr "Položka nebyla nalezena"
-
-#: wpimprov_sources.php:255
-msgid "back to list"
-msgstr "zpět na výpis"
-
-#: wpimprov_sources.php:275
-msgid "Save"
-msgstr "Uložit"
-
-#: wpimprov_sources.php:302
-msgid "Faceboook source"
-msgstr "Facebookový zdroj"
-
-#: wpimprov_sources.php:341
-msgid "Source is required"
-msgstr "Zdroj je vyžadován"
-
-#: wpimprov_sources.php:343
-msgid "Refreshed is required"
-msgstr "Pole Obnoveno je vyžadováno"
-
-#. URI of the plugin
-msgid "https://github.com/vatoz/wpimprov"
-msgstr ""
-
-#. Author of the plugin
-msgid "Vaclav Cerny"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://www.facebook.com/vaclav.cerny.12"
-msgstr ""
+"Plural-Forms: nplurals=3; plural=( n == 1 ) ? 0 : ( n >= 2 && n <= 4 ) ? 1 : "
+"2;\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: wpimprov.php:26
 msgid "Teams"
@@ -168,7 +95,7 @@ msgstr "Podnik"
 
 #: wpimprov.php:152
 msgid "Venue city"
-msgstr "Město "
+msgstr "Město"
 
 #: wpimprov.php:153
 msgid "Venue street"
@@ -191,15 +118,19 @@ msgstr "Týdenní výpisy"
 msgid "Wpimprov"
 msgstr "Wpimprov"
 
-#: wpimprov.php:361 wpimprov.php:361
+#: wpimprov.php:361
 msgid "Other sources"
 msgstr "Další zdroje"
 
-#: wpimprov.php:363 wpimprov.php:363
+#: wpimprov.php:362
+msgid "Add other source"
+msgstr "Přidat další zdroj"
+
+#: wpimprov.php:363
 msgid "Settings"
 msgstr "Nastavení"
 
-#: wpimprov.php:364 wpimprov.php:364
+#: wpimprov.php:364
 msgid "Load data"
 msgstr "Nahrát údaje"
 
@@ -235,7 +166,7 @@ msgstr "Facebook Token"
 
 #: wpimprov_display.php:275
 msgid "Future events"
-msgstr "Budoucí události "
+msgstr "Budoucí události"
 
 #: wpimprov_display.php:275
 msgid "No future events"
@@ -261,6 +192,71 @@ msgstr "Místo"
 msgid "Event time"
 msgstr "Čas události"
 
+#: wpimprov_sources.php:55 wpimprov_sources.php:307 wpimprov_sources.php:311
+msgid "Description"
+msgstr "Popis"
+
+#: wpimprov_sources.php:149
+#, php-format
+msgid "Items deleted: %d"
+msgstr "Položka smazána: %d"
+
+#: wpimprov_sources.php:155
+msgid "Sources"
+msgstr "Zdroje"
+
+#: wpimprov_sources.php:156
+msgid "Add new"
+msgstr "Přidat nový"
+
+#: wpimprov_sources.php:219
+msgid "Item was successfully saved"
+msgstr "Položka byla úspěšně uložena"
+
+#: wpimprov_sources.php:221
+msgid "There was an error while saving item"
+msgstr "Při  ukládání došlo k chybě"
+
+#: wpimprov_sources.php:226
+msgid "Item was successfully updated"
+msgstr "Položka byla úspěšně upravena"
+
+#: wpimprov_sources.php:228
+msgid "There was an error while updating item"
+msgstr "Došlo k chybě při ukládání úprav"
+
+#: wpimprov_sources.php:243
+msgid "Item not found"
+msgstr "Položka nebyla nalezena"
+
+#: wpimprov_sources.php:255
+msgid "back to list"
+msgstr "zpět na výpis"
+
+#: wpimprov.php:300
+msgid "Inactive"
+msgstr "Neaktivní"
+
+#: wpimprov_display.php:208
+msgid "Inactive or historical teams"
+msgstr "Neaktivní či historické skupiny"
+
+#: wpimprov_sources.php:275
+msgid "Save"
+msgstr "Uložit"
+
+#: wpimprov_sources.php:302
+msgid "Faceboook source"
+msgstr "Facebookový zdroj"
+
+#: wpimprov_sources.php:341
+msgid "Source is required"
+msgstr "Zdroj je vyžadován"
+
+#: wpimprov_sources.php:343
+msgid "Refreshed is required"
+msgstr "Pole Obnoveno je vyžadováno"
+
 #. Name of the plugin
 msgid "Improv events & teams"
 msgstr "Improvizační události a skupiny"
@@ -268,3 +264,15 @@ msgstr "Improvizační události a skupiny"
 #. Description of the plugin
 msgid "Will display events and teams"
 msgstr "Zobrazí události a skupiny"
+
+#. URI of the plugin
+msgid "https://github.com/vatoz/wpimprov"
+msgstr ""
+
+#. Author of the plugin
+msgid "Vaclav Cerny"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.facebook.com/vaclav.cerny.12"
+msgstr ""
