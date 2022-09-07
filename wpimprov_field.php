@@ -21,11 +21,14 @@ class wpimprov_field{
         echo $this->key; 
         ?>" id="<?php 
         echo $this->key; 
-        ?>" value="<?php 
+        ?>" <?php
+        if($this->field_type=="checkbox"){            
+            if(get_post_meta( $post_id,  $this->key , true ) == 1)  echo " checked ";
+        }else{
+        ?>
+        value="<?php 
         echo esc_attr( get_post_meta( $post_id,  $this->key , true ) ); 
-        ?>" size="30" <?php
-        if(($this->field_type=="checkbox")  &&  (get_post_meta( $post_id,  $this->key , true ) == 1)){
-            echo " checked ";
+        ?>" size="30" <?php                    
         }
         ?>
         />
