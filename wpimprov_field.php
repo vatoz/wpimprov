@@ -23,7 +23,8 @@ class wpimprov_field{
         echo $this->key; 
         ?>" <?php
         if($this->field_type=="checkbox"){            
-            if(get_post_meta( $post_id,  $this->key , true ) == 1)  echo " checked ";
+            echo ' value="1" ';
+            if(get_post_meta( $post_id,  $this->key , true ) == 1)  echo " checked  ";
         }else{
         ?>
         value="<?php 
