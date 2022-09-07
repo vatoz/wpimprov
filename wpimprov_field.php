@@ -15,7 +15,20 @@ class wpimprov_field{
     <p>
         <label for="<?php echo $this->key; ?>"><?php echo $this->description; ?></label>
         <br />
-        <input class="widefat" type="<?php echo $this->field_type; ?>" name="<?php echo $this->key; ?>" id="<?php echo $this->key; ?>" value="<?php echo esc_attr( get_post_meta( $post_id,  $this->key , true ) ); ?>" size="30" />
+        <input class="widefat" type="<?php
+        echo $this->field_type; 
+        ?>" name="<?php 
+        echo $this->key; 
+        ?>" id="<?php 
+        echo $this->key; 
+        ?>" value="<?php 
+        echo esc_attr( get_post_meta( $post_id,  $this->key , true ) ); 
+        ?>" size="30" <?php
+        if(($this->field_type=="checkbox")  &&  (get_post_meta( $post_id,  $this->key , true ) == 1)){
+            echo " checked ";
+        }
+        ?>
+        />
     </p>
     <?php
     }
