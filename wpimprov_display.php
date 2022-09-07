@@ -167,7 +167,11 @@ function wpimprov_teams_display($atts ){
 		$query2->the_post();
                 ob_start();
 		echo '<div class="wpimprov_team">';
+		if( isset($meta['wpimprov-team-inactive'][0] ) && $meta['wpimprov-team-inactive'][0] ==1 ){ 
+			//hide image of inactive teams
+		}else{
                 echo wpimprov_responsive_image();
+		}
                 echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
                 //$result.=var_export($query2->post,true);
 
