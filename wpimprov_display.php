@@ -160,6 +160,7 @@ function wpimprov_teams_display($atts ){
         $query2 = new WP_Query( $args );
 
         $posts_ar=array();
+	$posts_inactive=array();
         if ( $query2->have_posts() ) {
 	// The 2nd Loop
 	while ( $query2->have_posts() ) {
@@ -172,9 +173,14 @@ function wpimprov_teams_display($atts ){
 
 
                 $meta=get_post_meta($query2->post->ID, '', true);
-
                 echo  '</div>';
-                $posts_ar[$meta['wpimprov-team-city'][0]][]=  ob_get_clean();
+		
+		if( isset($meta['wpimprov-team-inactive'][0] ) && $meta['wpimprov-team-inactive'][0] ==1 ){
+			$posts_inactive[]=  ob_get_clean();
+		}else{
+			$posts_ar[$meta['wpimprov-team-city'][0]][]=  ob_get_clean();
+		}
+                
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
 	}
 
@@ -193,8 +199,20 @@ function wpimprov_teams_display($atts ){
 
 
         }
+	if(count($posts_inactive) ){
+		$result.="<div class=wpimprov_city>";
+		$result.="<h2>".__("Inactive or historical teams", 'wpimprov')."</h2>";
+		foreach($posts_inactive as $Team){
+            		$result.=$Team;
+        	}
+		$result.="</div>";
+	
+	}  
+		
 
-	 	$result.="</div>";
+	$result.="</div>";
+		
+		
 
 
          return $result;
@@ -258,9 +276,11 @@ $results=array();
                 $row[3]=  ob_get_clean();
                 $row[4]=get_post_permalink($query2->post->ID);
 
-
-                $results[]=$row;
-
+		if ( isset($meta['wpimprov-team-inactive'][0] ) && $meta['wpimprov-team-inactive'][0] ==1 ) {
+			//do nothing
+		}else{
+                	$results[]=$row;
+		}
             }
 
 
