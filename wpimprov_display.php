@@ -166,21 +166,20 @@ function wpimprov_teams_display($atts ){
 	while ( $query2->have_posts() ) {
 		$query2->the_post();
                 ob_start();
+                $meta=get_post_meta($query2->post->ID, '', true);
+
 		echo '<div class="wpimprov_team">';
-		if( isset($meta['wpimprov-team-inactive'][0] ) && $meta['wpimprov-team-inactive'][0] ==1 ){ 
-			//hide image of inactive teams
-		}else{
-                echo wpimprov_responsive_image();
-		}
+                
+                echo wpimprov_responsive_image( );
                 echo  '<h3>'.'<a href="'.get_post_permalink($query2->post->ID).'">'.get_the_title( $query2->post->ID ).'</a></h3>' ;
                 //$result.=var_export($query2->post,true);
 
 
-                $meta=get_post_meta($query2->post->ID, '', true);
+                
                 echo  '</div>';
 		
-		if( isset($meta['wpimprov-team-inactive'][0] ) && $meta['wpimprov-team-inactive'][0] ==1 ){
-			$posts_inactive[]=  ob_get_clean();
+		if( isset($meta['wpimprov-team-inactive'][0] ) and $meta['wpimprov-team-inactive'][0] ==1 ){
+			$posts_inactive[get_the_title( $query2->post->ID )]=  ob_get_clean();
 		}else{
 			$posts_ar[$meta['wpimprov-team-city'][0]][]=  ob_get_clean();
 		}
@@ -206,6 +205,7 @@ function wpimprov_teams_display($atts ){
 	if(count($posts_inactive) ){
 		$result.="<div class=wpimprov_city>";
 		$result.="<h2>".__("Inactive or historical teams", 'wpimprov')."</h2>";
+                ksort($posts_inactive);
 		foreach($posts_inactive as $Team){
             		$result.=$Team;
         	}

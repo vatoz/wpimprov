@@ -888,44 +888,32 @@ function wpimprov_load_textdomain() {
 	load_plugin_textdomain( 'wpimprov', false, dirname( plugin_basename(__FILE__) )  );
 }
 
+
 function wpimprov_responsive_image(){
+    
+    
     ob_start();
-    $tn_id = get_post_thumbnail_id( );
+    
+    $id = get_post_thumbnail_id();
+    $src = wp_get_attachment_image_src( $id, 'thumbnail' );
+    $srcset = wp_get_attachment_image_srcset( $id, array('full','medium','thumbnail','large','medium-large',"w_100","w_300") );
+    $sizes = wp_get_attachment_image_sizes( $id, 'full' );
+    $alt = get_post_meta( $id, '_wp_attachment_image_alt', true);
 
-    $img = wp_get_attachment_image_src( $tn_id, 'full' );
-    $width = $img[1];
+    ?>
+    <img src="<?php echo esc_attr( $src[0] );?>"
+        srcset="<?php echo esc_attr( $srcset ); ?>"
+        sizes="<?php echo esc_attr( $sizes );?>"
+        alt="<?php echo esc_attr( $alt );?>" />
+<?php
 
+return ob_get_clean( );
 
-    echo '<img src="';
-            if($width>300){
-                the_post_thumbnail_url("w_300");
-            }else{
-
-                the_post_thumbnail_url("full");
-            }
-            echo '" srcset="';
-
-            the_post_thumbnail_url("full");
-            echo " ".$width."w ";
-
-
-            foreach(array(100,300,800,1200) as $size){
-                    if($width>$size){
-                        echo ",";
-                            the_post_thumbnail_url("w_".$size);
-            echo " ".$size."w ";
-
-                }
-                }
-
-
-                echo '" class=img-responsive>';
-    return ob_get_clean();
 }
 
 
 
 add_image_size( "w_100",100);
 add_image_size( "w_300",300);
-add_image_size( "w_800",800);
-add_image_size( "w_1200",1200);
+//add_image_size( "w_800",800);
+//add_image_size( "w_1200",1200);
