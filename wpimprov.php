@@ -284,6 +284,11 @@ function wpimprov_load_facebook_source($fa, $Source, $Refreshed = null, $Verbose
     return true;
 }
 
+ add_action('admin_menu', 'wpimprov_add_admin_menu');
+if (is_admin()) {
+
+    add_action('admin_init', 'wpimprov_settings_init');
+}
 
 function wpimprov_add_admin_menu() {
   add_menu_page("Wpimprov: ".__('Weekly lists', 'wpimprov'), __('Wpimprov', 'wpimprov'), 'manage_options', 'wpimprov_list', 'wpimprov_list_page');
