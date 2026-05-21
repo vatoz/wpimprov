@@ -66,10 +66,9 @@ function wpimprov_calender_display( $atts ){
 
 
                 $meta=get_post_meta($query2->post->ID, '', true);
-                echo wpimprov_date_hours($meta['wpimprov-event-start-time'][0]).'<br>';
-
-
-                echo  ($meta['wpimprov-event-venue-city'][0]?$meta['wpimprov-event-venue-city'][0].', ':"").$meta['wpimprov-event-venue'][0].'<br>';
+			    echo '<span class="wpimprov_time">' . wpimprov_date_hours($meta['wpimprov-event-start-time'][0]) . '</span>';
+			    echo '<span class="wpimprov_venue">' . ($meta['wpimprov-event-venue-city'][0] ? $meta['wpimprov-event-venue-city'][0].', ' : '') . $meta['wpimprov-event-venue'][0] . '</span>';
+		
                 echo  '</div>';
                 $posts_ar[substr( $meta['wpimprov-event-start-time'][0],0,10) ][]=  ob_get_clean();
                 //$result.= var_export(get_post_meta($query2->post->ID, '', true),true). '</li>';
