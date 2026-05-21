@@ -1,6 +1,7 @@
 <?php
 /**
  * Plugin Name: Improv events & teams
+ * GitHub Plugin URI: https://github.com/vatoz/wpimprov
  * Plugin URI: https://github.com/vatoz/wpimprov
  * Description: Will display events and teams
  * Version: 0.0.3
@@ -471,15 +472,6 @@ function wpimprov_options_page() {
 
     <?php
 
-
-}
-
-function wpimprov_userevents_page(){
- $options = get_option('wpimprov_settings');
-    require_once 'fbActions.php';
-
-   $fa = new fbActions($options['wpimprov_textarea_fb_app_id'], $options['wpimprov_textarea_fb_app_secret'],wpimprov_usertoken());
-   $fa->user_load(menu_page_url('wpimprov_fb_user_events',false),wpimprov_get_loaded(), $options['wpimprov_textarea_tagging']);
 
 }
 
